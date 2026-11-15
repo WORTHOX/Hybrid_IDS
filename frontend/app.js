@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   HNIDS — Client Application Engine
-   Routes through /api/* proxy → FastAPI backend
+   HNIDS — TACTICAL CYBER TELEMETRY ENGINE
+   Direct Proxy Routing: /api/* → FastAPI Engine on port 8000
    ═══════════════════════════════════════════════════════════════════════════ */
 
 (() => {
@@ -20,16 +20,16 @@
     'Rare'
   ];
 
-  // Palette matching CSS tokens
-  const CLASS_HEX = {
-    BENIGN:     '#4A6741', // Deep Olive
-    DoS:        '#A0522D', // Sienna
-    DDoS:       '#8B3A3A', // Deep Rust
-    PortScan:   '#9B7A3A', // Ochre
-    BruteForce: '#7A4A5A', // Wine Mauve
-    WebAttack:  '#8B4A3A', // Terracotta
-    Bot:        '#3D4E6D', // Slate Indigo
-    Rare:       '#6A5A7A', // Amethyst Slate
+  // Exact tactical cyber semantics
+  const CLASS_COLORS = {
+    BENIGN:     '#10B981', // Emerald Safe
+    DoS:        '#F59E0B', // Amber Warn
+    DDoS:       '#F43F5E', // Crimson Alert
+    PortScan:   '#EAB308', // Ochre
+    BruteForce: '#EC4899', // Pink Alert
+    WebAttack:  '#FB7185', // Rose Attack
+    Bot:        '#06B6D4', // Cyan Protocol
+    Rare:       '#A855F7', // Violet Anomaly
   };
 
   const CLASS_SHORT_CODES = {
@@ -77,6 +77,8 @@
     resultContent:     $('#result-content'),
     resultClass:       $('#result-class'),
     resultConfidence:  $('#result-confidence'),
+    verdictTag:        $('#verdict-tag'),
+    verdictBanner:     $('#verdict-banner-wrap'),
     resultDetails:     $('#result-details'),
     resultProbs:       $('#result-probs'),
     streamInput:       $('#stream-input'),
@@ -93,7 +95,7 @@
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  1. NAVIGATION (TABS + KEYBOARD [1-4])
+  //  1. NAVIGATION & HOTKEYS [1-4]
   // ═══════════════════════════════════════════════════════════════════════════
   function initNav() {
     const navBtns = $$('.nav-btn');
@@ -105,7 +107,7 @@
       });
     });
 
-    // Keyboard navigation (Keys 1-4)
+    // Keyboard Hotkeys 1-4 for instant switching
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       const idx = parseInt(e.key, 10) - 1;
@@ -134,31 +136,34 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  2. OVERCLOCK POSTER WALL (8-COLUMN MATRIX)
+  //  2. 8-COLUMN THREAT CLASSIFICATION MATRIX
   // ═══════════════════════════════════════════════════════════════════════════
-  function buildPosterWall() {
+  function buildMatrix() {
     if (!dom.distribution) return;
     dom.distribution.innerHTML = CLASSES.map(cls => `
-      <div class="poster-tile" data-class="${cls}">
-        <span class="poster-tile__key" aria-hidden="true">${CLASS_SHORT_CODES[cls]}</span>
-        <span class="poster-tile__label">${cls}</span>
-        <div class="poster-tile__num" id="poster-num-${cls}">0</div>
-        <div class="poster-tile__bar-wrap">
-          <div class="poster-tile__bar-fill" id="poster-bar-${cls}" style="width: 0%; background-color: ${CLASS_HEX[cls]};"></div>
+      <div class="matrix-tile" data-class="${cls}">
+        <div class="matrix-tile__top">
+          <span class="matrix-tile__idx">${CLASS_SHORT_CODES[cls]}</span>
+          <span class="matrix-tile__pill" style="color: ${CLASS_COLORS[cls]}; background: ${CLASS_COLORS[cls]}1A;">ACTIVE</span>
         </div>
-        <span class="poster-tile__pct" id="poster-pct-${cls}">0.0%</span>
+        <div class="matrix-tile__name" title="${cls}">${cls}</div>
+        <div class="matrix-tile__num" id="matrix-num-${cls}">0</div>
+        <div class="matrix-tile__track">
+          <div class="matrix-tile__fill" id="matrix-bar-${cls}" style="width: 0%; background-color: ${CLASS_COLORS[cls]};"></div>
+        </div>
+        <div class="matrix-tile__pct" id="matrix-pct-${cls}">0.0%</div>
       </div>
     `).join('');
   }
 
-  function updatePosterWall() {
+  function updateMatrix() {
     const total = Math.max(1, Object.values(state.classCounts).reduce((a, b) => a + b, 0));
     CLASSES.forEach(cls => {
       const count = state.classCounts[cls];
       const pct = (count / total * 100).toFixed(1);
-      const numEl = $(`#poster-num-${cls}`);
-      const barEl = $(`#poster-bar-${cls}`);
-      const pctEl = $(`#poster-pct-${cls}`);
+      const numEl = $(`#matrix-num-${cls}`);
+      const barEl = $(`#matrix-bar-${cls}`);
+      const pctEl = $(`#matrix-pct-${cls}`);
 
       if (numEl) numEl.textContent = count;
       if (barEl) barEl.style.width = `${pct}%`;
@@ -167,31 +172,31 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  3. HEALTH CHECK & SYSTEM READINESS
+  //  3. SENSOR HEALTH & MODEL STATUS
   // ═══════════════════════════════════════════════════════════════════════════
   async function checkHealth() {
     try {
       const res = await fetch(`${API_BASE}/readyz`);
       const data = await res.json();
       if (data.ready) {
-        if (dom.statusMark) dom.statusMark.className = 'status-mark ok';
-        if (dom.statusText) dom.statusText.textContent = 'SYSTEM READY';
+        if (dom.statusMark) dom.statusMark.className = 'sensor-beacon ok';
+        if (dom.statusText) dom.statusText.textContent = 'RADAR READY';
         if (dom.bundleVersion) dom.bundleVersion.textContent = data.bundle_version || 'b20261111T112951Z';
         return true;
       } else {
-        if (dom.statusMark) dom.statusMark.className = 'status-mark bad';
-        if (dom.statusText) dom.statusText.textContent = 'NOT READY';
+        if (dom.statusMark) dom.statusMark.className = 'sensor-beacon bad';
+        if (dom.statusText) dom.statusText.textContent = 'SENSOR FAULT';
         return false;
       }
     } catch {
-      if (dom.statusMark) dom.statusMark.className = 'status-mark bad';
+      if (dom.statusMark) dom.statusMark.className = 'sensor-beacon bad';
       if (dom.statusText) dom.statusText.textContent = 'OFFLINE';
       return false;
     }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  4. API CLIENT
+  //  4. API ENGINE DISPATCH
   // ═══════════════════════════════════════════════════════════════════════════
   async function apiPost(endpoint, body, apiKey) {
     const headers = { 'Content-Type': 'application/json' };
@@ -209,21 +214,21 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  5. DETECTION VIEW LOGIC
+  //  5. FLOW DETECTION TEST BENCH
   // ═══════════════════════════════════════════════════════════════════════════
   async function runDetect() {
     const raw = dom.detectInput.value.trim();
-    if (!raw) return showToast('Input required: paste JSON window payload.');
+    if (!raw) return showToast('Please provide a 20-flow JSON payload.');
 
     let payload;
     try {
       payload = JSON.parse(raw);
     } catch {
-      return showToast('Malformed JSON: verify syntax.');
+      return showToast('Syntax error: invalid JSON payload.');
     }
 
     dom.btnDetect.disabled = true;
-    dom.btnDetect.innerHTML = '<span class="btn__key">…</span> EVALUATING';
+    dom.btnDetect.innerHTML = '<span class="btn-keycap">…</span><span>INFERRING FLOWS…</span>';
 
     try {
       const result = await apiPost('/v1/detect', payload, dom.apiKeyDetect.value);
@@ -231,10 +236,10 @@
       recordDetection(result);
       showResult(result);
     } catch (err) {
-      showToast(`Detection Error: ${err.message}`);
+      showToast(`Evaluation Failed: ${err.message}`);
     } finally {
       dom.btnDetect.disabled = false;
-      dom.btnDetect.innerHTML = '<span class="btn__key" aria-hidden="true">⏎</span> RUN DETECTION';
+      dom.btnDetect.innerHTML = '<span class="btn-keycap" aria-hidden="true">⏎</span><span>EXECUTE CLASSIFICATION</span>';
     }
   }
 
@@ -245,49 +250,56 @@
 
     const cls = event.hnids.predicted_class;
     const conf = event.hnids.confidence;
-    const color = CLASS_HEX[cls] || '#1C1A17';
+    const isAlert = event.hnids.is_alert;
+    const clsColor = CLASS_COLORS[cls] || '#F1F5F9';
 
     dom.resultClass.textContent = cls;
-    dom.resultClass.style.color = color;
+    dom.resultClass.style.color = clsColor;
+
+    if (dom.verdictTag) {
+      dom.verdictTag.textContent = isAlert ? 'THREAT DETECTED' : 'CLEAN FLOW';
+      dom.verdictTag.style.color = isAlert ? 'var(--cyber-crimson)' : 'var(--cyber-emerald)';
+      dom.verdictTag.style.backgroundColor = isAlert ? 'var(--cyber-crimson-bg)' : 'var(--cyber-emerald-bg)';
+    }
 
     dom.resultConfidence.textContent = `${(conf * 100).toFixed(2)}% CONFIDENCE`;
-    dom.resultConfidence.style.color = conf >= 0.9 ? 'var(--c-ok)' : conf >= 0.6 ? 'var(--bronze)' : 'var(--c-alert)';
+    dom.resultConfidence.style.color = conf >= 0.9 ? 'var(--cyber-emerald)' : conf >= 0.6 ? 'var(--cyber-amber)' : 'var(--cyber-crimson)';
 
-    // Key-Value Grid
+    // Key-value metadata table
     dom.resultDetails.innerHTML = [
-      ['EVENT KIND', event.event.kind.toUpperCase()],
-      ['ALERT STATUS', event.hnids.is_alert ? 'ACTION REQUIRED' : 'NORMAL'],
-      ['BUNDLE VERSION', event.hnids.bundle_version],
-      ['VALIDATION', event.hnids.validation_status.toUpperCase()],
+      ['CLASSIFICATION KIND', event.event.kind.toUpperCase()],
+      ['ALERT TRIGGER', isAlert ? 'YES (ACTIONABLE)' : 'NO (BENIGN)'],
+      ['MODEL BUNDLE', event.hnids.bundle_version],
+      ['VALIDATION STATUS', event.hnids.validation_status.toUpperCase()],
       ['SANITIZED VALUES', event.hnids.sanitized_values],
-      ['DETECTION REF', event.detection_id.slice(0, 12)],
+      ['DETECTION ID', event.detection_id.slice(0, 16)],
     ].map(([k, v]) => `
-      <div class="result-meta-row">
-        <span class="result-meta-row__key">${k}</span>
-        <span class="result-meta-row__val">${v}</span>
+      <div class="meta-field">
+        <span class="meta-field__k">${k}</span>
+        <span class="meta-field__v">${v}</span>
       </div>
     `).join('');
 
-    // Probabilities breakdown
+    // Probability breakdown spectrum
     const probs = event.hnids.probabilities || {};
     dom.resultProbs.innerHTML = Object.entries(probs)
       .sort((a, b) => b[1] - a[1])
       .map(([name, prob]) => {
         const pct = (prob * 100).toFixed(2);
-        const pColor = CLASS_HEX[name] || 'var(--ink-muted)';
+        const barColor = CLASS_COLORS[name] || 'var(--text-muted)';
         return `
-          <div class="prob-row">
-            <span class="prob-row__label">${name}</span>
-            <div class="prob-row__track">
-              <div class="prob-row__fill" style="width: ${pct}%; background-color: ${pColor};"></div>
+          <div class="prob-row-item">
+            <span class="prob-name">${name}</span>
+            <div class="prob-track">
+              <div class="prob-fill" style="width: ${pct}%; background-color: ${barColor};"></div>
             </div>
-            <span class="prob-row__val">${pct}%</span>
+            <span class="prob-val">${pct}%</span>
           </div>
         `;
       }).join('');
   }
 
-  // Preset Sample Loader
+  // Preset sample loader
   async function loadPresetSample(sampleKey) {
     const filenameMap = {
       ddos:      'detect_ddos.request.json',
@@ -304,7 +316,7 @@
       if (res.ok) {
         const data = await res.json();
         dom.detectInput.value = JSON.stringify(data, null, 2);
-        showToast(`Loaded ${sampleKey.toUpperCase()} sample window.`);
+        showToast(`Loaded ${sampleKey.toUpperCase()} network attack sample.`);
       } else {
         dom.detectInput.value = JSON.stringify(FALLBACK_PAYLOAD, null, 2);
       }
@@ -313,8 +325,8 @@
     }
   }
 
-  function initSampleChips() {
-    const chips = $$('.sample-chip');
+  function initPresetChips() {
+    const chips = $$('.btn-preset');
     chips.forEach(chip => {
       chip.addEventListener('click', () => {
         const sample = chip.dataset.sample;
@@ -324,17 +336,17 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  6. STREAM VIEW LOGIC
+  //  6. PACKET STREAM ACCUMULATOR
   // ═══════════════════════════════════════════════════════════════════════════
   async function pushFlow() {
     const raw = dom.streamInput.value.trim();
-    if (!raw) return showToast('Flow record JSON required.');
+    if (!raw) return showToast('Please enter single flow JSON packet.');
 
     let payload;
     try {
       payload = JSON.parse(raw);
     } catch {
-      return showToast('Malformed flow JSON record.');
+      return showToast('Malformed JSON flow object.');
     }
 
     dom.btnStream.disabled = true;
@@ -353,29 +365,29 @@
         const cls = result.detection.hnids.predicted_class;
         const conf = (result.detection.hnids.confidence * 100).toFixed(1);
         logHtml = `
-          <div class="stream-event-item stream-event-item--alert">
-            <span class="stream-event-time">${time}</span>
-            <span class="stream-event-msg">⚡ DETECTION WINDOW FIRED: <strong>${cls}</strong> (${conf}%)</span>
+          <div class="stream-log-entry stream-log-entry--alert">
+            <span class="log-time">${time}</span>
+            <span class="log-msg">⚡ <strong>ACCUMULATED 20 FLOWS: INFERENCE FIRED</strong> → <strong>${cls}</strong> (${conf}% confidence)</span>
           </div>
         `;
         state.bufferCount = 0;
         updateBuffer();
       } else {
         logHtml = `
-          <div class="stream-event-item">
-            <span class="stream-event-time">${time}</span>
-            <span class="stream-event-msg">Flow buffered [${result.buffered} / ${result.window_length}]</span>
+          <div class="stream-log-entry">
+            <span class="log-time">${time}</span>
+            <span class="log-msg">Flow received and queued [Buffer: ${result.buffered} / ${result.window_length}]</span>
           </div>
         `;
       }
 
       const logEl = dom.streamLog;
-      const emptyEl = logEl.querySelector('.feed-empty');
+      const emptyEl = logEl.querySelector('.feed-empty-state');
       if (emptyEl) emptyEl.remove();
       logEl.insertAdjacentHTML('afterbegin', logHtml);
 
     } catch (err) {
-      showToast(`Stream push error: ${err.message}`);
+      showToast(`Stream push failed: ${err.message}`);
     } finally {
       dom.btnStream.disabled = false;
     }
@@ -385,7 +397,7 @@
     const pct = Math.min(100, (state.bufferCount / state.windowLength) * 100);
     if (dom.bufferFill) {
       dom.bufferFill.style.width = `${pct}%`;
-      dom.bufferFill.style.backgroundColor = pct >= 80 ? 'var(--c-alert)' : 'var(--bronze)';
+      dom.bufferFill.style.backgroundColor = pct >= 80 ? 'var(--cyber-crimson)' : 'var(--cyber-cyan)';
     }
     if (dom.bufferLabel) {
       dom.bufferLabel.textContent = `${state.bufferCount} / ${state.windowLength}`;
@@ -412,7 +424,7 @@
     addFeedEntry(event);
 
     if (isAlert && cls !== 'BENIGN') {
-      showToast(`${cls} incident detected (${(conf * 100).toFixed(1)}% conf)`);
+      showToast(`Threat Intercepted: ${cls} (${(conf * 100).toFixed(1)}% conf)`);
     }
   }
 
@@ -426,33 +438,33 @@
     }
 
     if (dom.detectionCount) dom.detectionCount.textContent = state.detections.length;
-    updatePosterWall();
+    updateMatrix();
   }
 
   function addFeedEntry(event) {
     const feed = dom.detectionFeed;
     if (!feed) return;
-    const empty = feed.querySelector('.feed-empty');
+    const empty = feed.querySelector('.feed-empty-state');
     if (empty) empty.remove();
 
     const cls = event.hnids.predicted_class;
     const conf = (event.hnids.confidence * 100).toFixed(1);
-    const kind = event.event.kind;
     const isAlert = event.hnids.is_alert;
     const time = new Date(event.event.created).toLocaleTimeString();
-    const tagClass = isAlert ? 'entry-tag--alert' : 'entry-tag--signal';
-    const tagText = isAlert ? 'ALERT' : 'SIGNAL';
+    const tagClass = isAlert ? 'event-badge--alert' : 'event-badge--signal';
+    const tagText = isAlert ? 'THREAT' : 'BENIGN';
+    const color = CLASS_COLORS[cls] || 'var(--text-primary)';
 
-    const entry = document.createElement('div');
-    entry.className = 'detection-entry';
-    entry.innerHTML = `
-      <span class="entry-tag ${tagClass}">${tagText}</span>
-      <span class="entry-class" style="color: ${CLASS_HEX[cls] || 'var(--ink)'};">${cls}</span>
-      <span class="entry-conf">${conf}%</span>
-      <span class="entry-time">${time}</span>
+    const row = document.createElement('div');
+    row.className = 'feed-event-row';
+    row.innerHTML = `
+      <span class="event-badge ${tagClass}">${tagText}</span>
+      <span class="event-class" style="color: ${color};">${cls}</span>
+      <span class="event-conf">${conf}%</span>
+      <span class="event-time">${time}</span>
     `;
 
-    feed.insertBefore(entry, feed.firstChild);
+    feed.insertBefore(row, feed.firstChild);
 
     while (feed.children.length > 50) {
       feed.removeChild(feed.lastChild);
@@ -464,7 +476,7 @@
   // ═══════════════════════════════════════════════════════════════════════════
   async function loadMetrics() {
     if (!dom.metricsContent) return;
-    dom.metricsContent.textContent = 'Querying Prometheus /metrics exporter…';
+    dom.metricsContent.textContent = 'Querying Prometheus /metrics endpoint…';
     try {
       const res = await fetch(`${API_BASE}/metrics`);
       if (res.ok) {
@@ -474,7 +486,7 @@
         dom.metricsContent.textContent = `HTTP ${res.status}: Exporter endpoint unavailable.`;
       }
     } catch {
-      dom.metricsContent.textContent = 'Connection refused on metrics endpoint.';
+      dom.metricsContent.textContent = 'Failed to reach /metrics endpoint.';
     }
   }
 
@@ -499,7 +511,7 @@
     clearTimeout(toastTimer);
   }
 
-  // ─── Minimal Fallback Payload ───
+  // Fallback 20-flow payload
   const FALLBACK_PAYLOAD = {
     "flows": Array.from({ length: 20 }, (_, i) => ({
       "session_id": "seed-001",
@@ -556,8 +568,8 @@
   // ═══════════════════════════════════════════════════════════════════════════
   function init() {
     initNav();
-    buildPosterWall();
-    initSampleChips();
+    buildMatrix();
+    initPresetChips();
     updateDashboard();
 
     // Event listeners
@@ -567,7 +579,7 @@
     if (dom.btnRefreshMetrics) dom.btnRefreshMetrics.addEventListener('click', loadMetrics);
     if (dom.toastClose) dom.toastClose.addEventListener('click', hideToast);
 
-    // Keyboard shortcuts (Cmd+Enter or Ctrl+Enter to submit)
+    // Keyboard shortcut (Cmd+Enter or Ctrl+Enter)
     if (dom.detectInput) {
       dom.detectInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
@@ -585,10 +597,10 @@
       });
     }
 
-    // Initial default sample load
+    // Default load DDoS preset for instant readiness
     loadPresetSample('ddos');
 
-    // Initial health check & recurring check every 12s
+    // Health checks
     checkHealth();
     setInterval(checkHealth, 12000);
   }
