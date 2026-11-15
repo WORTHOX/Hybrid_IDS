@@ -3,50 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AEGIS — Hybrid Neural Intrusion Defense Platform</title>
-  <!--
-    AEGIS CYBER DEFENSE TELEMETRY SUITE
-    ═════════════════════════════════════════════════════════════════════════
-    DESIGN ARCHITECTURE: Overclock Extravagant Cyber Telemetry
-    · Core Palette: Deep Tactical Obsidian (#080A10), Carbon Mesh (#0E131F)
-    · Punchy Accents: Electric Blue (#4285F4), Cyber Sky (#4CC9F0),
-      Hot Coral (#FF6B4A), Boost Gold (#FFB020), Matrix Green (#4ADE80),
-      Magenta (#F84464), Neon Lilac (#D4C5F9)
-    · Typography: Inter Tight + JetBrains Mono
-    · Interactive Elements: Sleek modern controls (zero clunky box shadows)
-    ═════════════════════════════════════════════════════════════════════════
-  -->
+  <title>H_IDS — Hybrid Network Intrusion Detection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23080A10'/><path d='M50 14 L82 28 L82 58 C82 76 50 88 50 88 C50 88 18 76 18 58 L18 28 Z' fill='%234285F4' fill-opacity='0.15' stroke='%234285F4' stroke-width='6'/><path d='M50 34 L68 52 L50 70 L32 52 Z' fill='%234CC9F0'/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2317181b'/><text x='50' y='65' font-size='42' fill='%23f3efe6' font-family='monospace' font-weight='bold' text-anchor='middle'>H</text></svg>">
 </head>
-<body class="cyber-theme">
+<body class="overclock-theme">
 
-  <!-- Overclock Spectrum Glow Ribbon at Top Edge -->
-  <div class="spectrum-top-bar" aria-hidden="true"></div>
-
-  <!-- ═══ ELEVATED TOP NAVIGATION BAR (Taller 76px Ergonomic Bar) ═══ -->
+  <!-- ═══ TOP NAVIGATION BAR ═══ -->
   <header class="top-nav" role="banner">
     <div class="nav-brand">
-      <div class="brand-shield" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="shield-svg">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          <path d="M9 12l2 2 4-4" stroke="#4ADE80" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
       <div class="brand-info">
-        <div class="brand-title-wrap">
-          <span class="brand-title">AEGIS</span>
-          <span class="brand-badge">HYBRID AI</span>
-          <span class="brand-status-dot" aria-hidden="true"></span>
-        </div>
-        <span class="brand-desc">AUTONOMOUS NEURAL INTRUSION DETECTION PLATFORM</span>
+        <span class="brand-title">H_IDS</span>
+        <span class="brand-desc">HYBRID NETWORK INTRUSION DETECTION</span>
       </div>
     </div>
 
-    <!-- Navigation Tabs (With Sleek Hotkey Caps [1-4]) -->
+    <!-- Navigation Tabs (Sleek Keycaps [1-4]) -->
     <nav class="nav-links" role="tablist" aria-label="Main Navigation">
       <button class="nav-btn active" data-view="dashboard" role="tab" aria-selected="true" id="tab-dashboard">
         <span class="nav-key" aria-hidden="true">1</span>
@@ -66,14 +41,14 @@
       </button>
     </nav>
 
-    <!-- Radar Link Status & Model Fingerprint -->
+    <!-- System Status & Model Bundle -->
     <div class="nav-status-group">
-      <div class="sensor-pill" title="Live Sensor Socket Health">
+      <div class="sensor-pill">
         <span class="sensor-beacon" id="status-mark" aria-hidden="true"></span>
-        <span class="sensor-label" id="status-text">SYSTEM ACTIVE</span>
+        <span class="sensor-label" id="status-text">INITIALIZING</span>
       </div>
-      <div class="bundle-pill" title="Active Model Weights Bundle Verified">
-        <span class="bundle-label">MODEL:</span>
+      <div class="bundle-pill" title="Active Model Weights Bundle">
+        <span class="bundle-label">BUNDLE:</span>
         <span class="bundle-val" id="bundle-version">b20261111T112951Z</span>
       </div>
     </div>
@@ -82,31 +57,26 @@
   <!-- ═══ VIEW 1: TELEMETRY OVERVIEW ═══ -->
   <main class="view active" id="view-dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
 
-    <!-- Mission Control Banner (Punchy & Extravagant) -->
+    <!-- Mission Header Section -->
     <section class="mission-banner">
       <div class="mission-text">
-        <div class="mission-tag">
-          <span class="radar-dot" aria-hidden="true"></span>
-          REAL-TIME DEEP PACKET & SEQUENCE INFERENCE ENGINE
-        </div>
-        <h1 class="mission-headline">Autonomous Threat Interception</h1>
+        <div class="mission-tag">DEEP PACKET & SEQUENCE INFERENCE</div>
+        <h1 class="mission-headline">Network Threat Detection</h1>
         <p class="mission-sub">
           Dual-stream neural feature extraction combining Bidirectional GRU and Multi-Head Transformer attention with an XGBoost gradient ensemble. Real-time inference across 78 flow parameters targeting the 8-class CIC threat taxonomy.
         </p>
 
-        <!-- Quick Telemetry Stats Bar -->
         <div class="hero-chip-bar">
           <span class="hero-chip chip--blue">BiGRU 64D</span>
           <span class="hero-chip chip--cyan">Transformer 4H</span>
           <span class="hero-chip chip--purple">XGBoost Ensemble</span>
-          <span class="hero-chip chip--green">78 Features / Window</span>
+          <span class="hero-chip chip--green">78 Features</span>
         </div>
       </div>
 
       <div class="engine-spec-block">
         <div class="spec-header">
-          <span class="spec-title">ENGINE ARCHITECTURE CONTRACT</span>
-          <span class="spec-live-pulse" aria-hidden="true"></span>
+          <span class="spec-title">ENGINE SPECIFICATIONS</span>
         </div>
         <div class="spec-row">
           <span class="spec-k">PIPELINE GRAPH</span>
@@ -122,12 +92,12 @@
         </div>
         <div class="spec-row">
           <span class="spec-k">CORE INTEGRITY</span>
-          <span class="spec-v text-green">Pristine Upstream · Zero Core Tampering</span>
+          <span class="spec-v text-green">Verified Pre-trained Model</span>
         </div>
       </div>
     </section>
 
-    <!-- Vital Stats Strip (Punchy Overclock Numerals) -->
+    <!-- Vital Stats Strip (Clean Typography, No Emojis) -->
     <section class="kpi-grid" aria-label="Key Performance Indicators">
       <div class="kpi-card kpi-card--blue">
         <div class="kpi-header">
@@ -140,11 +110,11 @@
 
       <div class="kpi-card kpi-card--coral">
         <div class="kpi-header">
-          <span class="kpi-title">THREATS INTERCEPTED</span>
+          <span class="kpi-title">THREATS DETECTED</span>
           <span class="kpi-tag tag--coral">ANOMALIES</span>
         </div>
         <div class="kpi-value text-coral" id="total-alerts">0</div>
-        <div class="kpi-foot">Malicious attacks classified & blocked</div>
+        <div class="kpi-foot">Malicious traffic flows flagged</div>
       </div>
 
       <div class="kpi-card kpi-card--green">
@@ -166,7 +136,7 @@
       </div>
     </section>
 
-    <!-- Threat Classification Matrix (Punchy 8-Column Overclock Telemetry Wall) -->
+    <!-- Threat Classification Matrix (8-Column Telemetry Grid) -->
     <section class="matrix-section" aria-label="Real-time Threat Matrix">
       <div class="section-title-bar">
         <div>
@@ -182,11 +152,11 @@
       </div>
 
       <div class="cyber-matrix-grid" id="distribution">
-        <!-- Dynamically generated by app.js: 8 punchy threat tiles with real-time meters -->
+        <!-- Dynamically populated by app.js -->
       </div>
     </section>
 
-    <!-- Split Section: Incident Feed (62%) + Threat Intelligence Details (38%) -->
+    <!-- Split Section: Incident Feed (62%) + Pipeline Stages (38%) -->
     <div class="cyber-split">
       <section class="cyber-col cyber-col--main">
         <div class="section-title-bar">
@@ -198,9 +168,8 @@
 
         <div class="incident-feed-box" id="detection-feed" role="log" aria-live="polite">
           <div class="feed-empty-state">
-            <div class="radar-scan-anim" aria-hidden="true"></div>
-            <p class="feed-empty-title">Radar Sensor Active · Monitoring Traffic</p>
-            <p class="feed-empty-sub">No intrusion events detected yet. Submit flow traffic via the Detection bench or Stream queue.</p>
+            <p class="feed-empty-title">Awaiting Network Flows</p>
+            <p class="feed-empty-sub">No flow events recorded yet. Submit traffic via Flow Detection or Live Stream.</p>
           </div>
         </div>
       </section>
@@ -208,7 +177,7 @@
       <aside class="cyber-col cyber-col--side">
         <div class="section-title-bar">
           <div>
-            <h2 class="section-title">NEURAL CLASSIFICATION STAGES</h2>
+            <h2 class="section-title">CLASSIFICATION PIPELINE</h2>
             <span class="section-desc">Layered inference graph</span>
           </div>
         </div>
@@ -225,7 +194,7 @@
           <div class="pipeline-stage stage--cyan">
             <div class="stage-num">02</div>
             <div class="stage-body">
-              <div class="stage-title">Bidirectional GRU Recurrent Layer</div>
+              <div class="stage-title">Bidirectional GRU Layer</div>
               <div class="stage-detail">Two-layer recurrent model (hidden dimension 64) extracting temporal forward & reverse flow context.</div>
             </div>
           </div>
@@ -233,7 +202,7 @@
           <div class="pipeline-stage stage--purple">
             <div class="stage-num">03</div>
             <div class="stage-body">
-              <div class="stage-title">Transformer Self-Attention Layer</div>
+              <div class="stage-title">Transformer Self-Attention</div>
               <div class="stage-detail">4-head attention mechanism capturing burst spikes, asymmetric packet sizes, and flag anomalies.</div>
             </div>
           </div>
@@ -248,7 +217,6 @@
         </div>
 
         <div class="security-banner">
-          <div class="sec-icon">🛡️</div>
           <div class="sec-content">
             <span class="sec-title">PROTECTED PROXY GATEWAY</span>
             <p class="sec-text">Zero modifications to core serving code. Reverse proxy at port 3000 authenticates and delivers flow vectors directly to the FastAPI engine.</p>
@@ -268,18 +236,18 @@
         <div class="section-title-bar">
           <div>
             <h2 class="section-title">NETWORK FLOW EVALUATION BENCH</h2>
-            <span class="section-desc">Dispatch 20 consecutive packet flow records for immediate neural scoring</span>
+            <span class="section-desc">Dispatch 20 consecutive packet flow records for neural scoring</span>
           </div>
         </div>
 
-        <!-- Punchy Attack Presets Toolbar -->
+        <!-- Attack Presets Toolbar (Clean Text, No Emojis) -->
         <div class="presets-toolbar">
-          <span class="presets-label">LOAD ATTACK SAMPLE:</span>
-          <button type="button" class="btn-preset btn-preset--ddos" data-sample="ddos">⚡ DDoS Attack</button>
-          <button type="button" class="btn-preset btn-preset--dos" data-sample="dos">⚠️ DoS Slowloris</button>
-          <button type="button" class="btn-preset btn-preset--benign" data-sample="benign">🛡️ Benign Clean</button>
-          <button type="button" class="btn-preset btn-preset--portscan" data-sample="portscan">🔍 PortScan</button>
-          <button type="button" class="btn-preset btn-preset--webattack" data-sample="webattack">🌐 Web Attack</button>
+          <span class="presets-label">LOAD SAMPLE:</span>
+          <button type="button" class="btn-preset btn-preset--ddos" data-sample="ddos">DDoS</button>
+          <button type="button" class="btn-preset btn-preset--dos" data-sample="dos">DoS</button>
+          <button type="button" class="btn-preset btn-preset--benign" data-sample="benign">Benign</button>
+          <button type="button" class="btn-preset btn-preset--portscan" data-sample="portscan">PortScan</button>
+          <button type="button" class="btn-preset btn-preset--webattack" data-sample="webattack">WebAttack</button>
         </div>
 
         <div class="form-block">
@@ -295,7 +263,7 @@
           <input class="cyber-input" type="password" id="api-key-detect" value="dev-local-key" autocomplete="off">
         </div>
 
-        <!-- Normal Sleek Buttons (Zero Box Shadow Behind Button) -->
+        <!-- Normal Sleek Modern Buttons (No Box Shadow Behind Button) -->
         <div class="action-buttons-row">
           <button type="button" class="btn-sleek btn-sleek--primary" id="btn-detect">
             <span class="btn-keycap" aria-hidden="true">⏎</span>
@@ -313,16 +281,13 @@
         <div class="section-title-bar">
           <div>
             <h2 class="section-title">INFERENCE VERDICT</h2>
-            <span class="section-desc">Deep model prediction telemetry</span>
+            <span class="section-desc">Model prediction telemetry</span>
           </div>
         </div>
 
         <div class="result-placeholder" id="result-placeholder">
-          <div class="radar-scope" aria-hidden="true">
-            <div class="radar-line"></div>
-          </div>
           <p class="placeholder-title">Awaiting Inference Request</p>
-          <p class="placeholder-desc">Click an attack sample above or dispatch a custom 20-flow JSON window to classify network traffic.</p>
+          <p class="placeholder-desc">Click a sample above or dispatch a custom 20-flow JSON window to classify network traffic.</p>
         </div>
 
         <div class="verdict-card hidden" id="result-content">
@@ -342,7 +307,7 @@
 
           <!-- Probability Distribution -->
           <div class="verdict-probabilities">
-            <div class="prob-title">POSTERIOR PROBABILITY BY CLASS (ALL 8)</div>
+            <div class="prob-title">POSTERIOR PROBABILITY BY CLASS</div>
             <div class="prob-bars-container" id="result-probs">
               <!-- Populated by app.js -->
             </div>
@@ -361,7 +326,7 @@
         <div class="section-title-bar">
           <div>
             <h2 class="section-title">PACKET FLOW STREAMING</h2>
-            <span class="section-desc">Stream individual packets into the active session buffer. Model fires automatically upon accumulating 20 flows.</span>
+            <span class="section-desc">Stream individual packets into session buffer. Model fires automatically upon accumulating 20 flows.</span>
           </div>
         </div>
 
@@ -378,7 +343,7 @@
           <input class="cyber-input" type="password" id="api-key-stream" value="dev-local-key" autocomplete="off">
         </div>
 
-        <!-- Sleek Normal Button -->
+        <!-- Normal Sleek Button -->
         <div class="action-buttons-row">
           <button type="button" class="btn-sleek btn-sleek--primary" id="btn-stream">
             <span class="btn-keycap" aria-hidden="true">⏎</span>
@@ -441,17 +406,16 @@
     </div>
   </section>
 
-  <!-- ═══ FOOTER / OVERCLOCK 4-SEGMENT PUNCHY BAR ═══ -->
+  <!-- ═══ FOOTER / OVERCLOCK 4-SEGMENT BAR ═══ -->
   <footer class="cyber-footer" role="contentinfo">
     <div class="footer-left">
-      <!-- Punchy Overclock 4-Segment Bar -->
       <div class="oc-signature-segments" aria-hidden="true">
         <span class="seg seg--blue" title="Electric Blue"></span>
         <span class="seg seg--coral" title="Hot Coral"></span>
         <span class="seg seg--gold" title="Boost Gold"></span>
         <span class="seg seg--green" title="Matrix Green"></span>
       </div>
-      <span class="footer-text">AEGIS AUTONOMOUS CYBER DEFENSE // FASTAPI + PYTORCH + XGBOOST</span>
+      <span class="footer-text">H_IDS // HYBRID NETWORK INTRUSION DETECTION // FASTAPI + PYTORCH + XGBOOST</span>
     </div>
 
     <div class="footer-right">
@@ -459,9 +423,9 @@
     </div>
   </footer>
 
-  <!-- ═══ SLEEK TOAST NOTIFICATION ═══ -->
+  <!-- ═══ SLEEK TOAST ═══ -->
   <div class="cyber-toast hidden" id="toast" role="alert" aria-live="assertive">
-    <div class="toast-lead-icon" aria-hidden="true">⚡</div>
+    <div class="toast-lead-tag" aria-hidden="true">SYS</div>
     <div class="toast-msg" id="toast-text">Alert message</div>
     <button type="button" class="toast-dismiss" id="toast-close" aria-label="Dismiss Notification">✕</button>
   </div>

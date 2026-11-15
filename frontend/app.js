@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   AEGIS CYBER DEFENSE — TELEMETRY ENGINE
+   H_IDS — HYBRID NETWORK INTRUSION DETECTION ENGINE
    Direct Proxy Routing: /api/* → FastAPI Engine on port 8000
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -180,7 +180,7 @@
       const data = await res.json();
       if (data.ready) {
         if (dom.statusMark) dom.statusMark.className = 'sensor-beacon ok';
-        if (dom.statusText) dom.statusText.textContent = 'RADAR READY';
+        if (dom.statusText) dom.statusText.textContent = 'ONLINE';
         if (dom.bundleVersion) dom.bundleVersion.textContent = data.bundle_version || 'b20261111T112951Z';
         return true;
       } else {
@@ -367,7 +367,7 @@
         logHtml = `
           <div class="stream-log-entry stream-log-entry--alert">
             <span class="log-time">${time}</span>
-            <span class="log-msg">⚡ <strong>ACCUMULATED 20 FLOWS: INFERENCE FIRED</strong> → <strong>${cls}</strong> (${conf}% confidence)</span>
+            <span class="log-msg"><strong>[INFERENCE DISPATCH] ACCUMULATED 20 FLOWS</strong> → <strong>${cls}</strong> (${conf}% confidence)</span>
           </div>
         `;
         state.bufferCount = 0;
