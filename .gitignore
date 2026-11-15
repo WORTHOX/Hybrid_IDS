@@ -33,3 +33,4 @@ kaggle.json
 # Published model bundles are versioned in git (small, integrity-sealed).
 !models/**/*.safetensors
 !models/**/*.ubj
+.DS_Store
