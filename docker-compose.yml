@@ -1,0 +1,21 @@
+services:
+  h_ids:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: h_ids-service
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - API_PORT=8000
+      - HNIDS_API_KEY=dev-local-key
+      - OMP_NUM_THREADS=1
+      - MKL_NUM_THREADS=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/api/readyz"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
