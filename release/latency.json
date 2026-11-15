@@ -1,0 +1,26 @@
+{
+  "bundle_version": "b20261111T112951Z",
+  "measured_at": "2026-11-11T11:41:50.750658+00:00",
+  "host": {
+    "platform": "Windows-10-10.0.26300-SP0",
+    "processor": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+    "torch_threads": 1
+  },
+  "iterations": 2000,
+  "model_only": {
+    "mean_ms": 8.357059899999513,
+    "p50_ms": 7.2508499997638864,
+    "p95_ms": 12.473500001033244,
+    "p99_ms": 16.62680900153645,
+    "stdev_ms": 3.4073214772583476
+  },
+  "end_to_end": {
+    "mean_ms": 12.876181600004202,
+    "p50_ms": 11.06055000127526,
+    "p95_ms": 18.375930001457164,
+    "p99_ms": 34.02058400144597,
+    "stdev_ms": 5.202621239878184
+  },
+  "target_mean_ms": 5.0,
+  "end_to_end_meets_target": false
+}

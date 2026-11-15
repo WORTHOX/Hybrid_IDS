@@ -1,0 +1,38 @@
+{
+  "schema_version": "1",
+  "detection_id": "cf234788-90c6-4935-b70d-b1d30c178cb3",
+  "event": {
+    "kind": "alert",
+    "category": "intrusion_detection",
+    "start": "2017-07-07T16:15:00Z",
+    "end": "2017-07-07T16:15:00Z",
+    "created": "2026-11-11T13:02:25.602986Z"
+  },
+  "threat": {
+    "framework": "hnids-taxonomy",
+    "technique_name": "DDoS"
+  },
+  "hnids": {
+    "predicted_class": "DDoS",
+    "probabilities": {
+      "BENIGN": 0.0,
+      "DoS": 0.0,
+      "DDoS": 0.999994,
+      "PortScan": 0.0,
+      "BruteForce": 0.0,
+      "WebAttack": 0.0,
+      "Bot": 2e-06,
+      "Rare": 4e-06
+    },
+    "confidence": 0.9999935116558399,
+    "alert_threshold": 0.5,
+    "low_confidence": false,
+    "is_alert": true,
+    "bundle_version": "b20261111T112951Z",
+    "feature_schema_version": 1,
+    "session_key": "fc12b050e24a404d",
+    "correlation_key": "225626bec72db12f",
+    "validation_status": "ok",
+    "sanitized_values": 0
+  }
+}

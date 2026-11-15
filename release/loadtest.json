@@ -1,0 +1,16 @@
+{
+  "bundle_version": "b20261111T112951Z",
+  "seconds": 60.15699569999924,
+  "concurrency": 16,
+  "requests": 3923,
+  "windows_per_second": 65.21269811351382,
+  "flows_per_second": 1304.2539622702766,
+  "error_rate": 0.0,
+  "finite_prediction_rate": 1.0,
+  "latency_ms": {
+    "mean": 244.87748603108028,
+    "p50": 112.41550000340794,
+    "p95": 843.9801099986631,
+    "p99": 1475.647891999614
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "INPUT_INVALID",
+    "message": "feature 'flow_duration' is missing or non-finite",
+    "details": {
+      "feature": "flow_duration"
+    }
+  }
+}

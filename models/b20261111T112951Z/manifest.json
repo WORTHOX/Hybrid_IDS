@@ -1,0 +1,38 @@
+{
+  "created_at": "2026-11-11T11:29:51.863578+00:00",
+  "files": {
+    "bundle.json": {
+      "sha256": "ed7f011159c0e79852b716d531aed731d79f3b266d135ecfd6a745022159dc1e",
+      "size": 2990
+    },
+    "eval_report.json": {
+      "sha256": "ad4a9478a0f47f61bbf4c475dc193a026eed94f19a3c1a20bf21c52b7a5b3b47",
+      "size": 11419
+    },
+    "eval_report.md": {
+      "sha256": "66b9d2089290f5621f8e3353ab1bba9efff9ab801217a6c81810c8d7f9656b70",
+      "size": 3551
+    },
+    "model.safetensors": {
+      "sha256": "28a76c97f95fa734c6da30f5323caa133ccbfff8fe6d308814d010a93b1098af",
+      "size": 6354112
+    },
+    "run_manifest.json": {
+      "sha256": "ef90b4dea88a167f00b166e0a503091045c6b5e7cd0830f390ef93bdfdeb56de",
+      "size": 2777
+    },
+    "scaler.json": {
+      "sha256": "3a667e189e2bd46adc638b6032e17bf3189415b569fbe0a3d34c991ec740567b",
+      "size": 5484
+    },
+    "training_history.json": {
+      "sha256": "49e026ab946fc0976205209c0f97347fed555b4a7469c7c7396b2b2c427e76f6",
+      "size": 1420
+    },
+    "xgb.ubj": {
+      "sha256": "6f489ebab1bb03acb8e7c843763c01b3c490ff5c0d2d2537a75047dcd531c416",
+      "size": 3855816
+    }
+  },
+  "manifest_version": 1
+}

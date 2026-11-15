@@ -1,0 +1,9 @@
+# Local development profile. Relative paths resolve against the repo root (run from there).
+run:
+  name: hnids-local
+  log_json: false
+
+paths:
+  data_roots: [data/raw, models]   # models/: published bundles (read-only)
+  artifact_root: artifacts
+  quarantine_root: quarantine

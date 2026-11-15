@@ -1,0 +1,171 @@
+{
+  "$defs": {
+    "EventSection": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "alert",
+            "signal"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "category": {
+          "const": "intrusion_detection",
+          "default": "intrusion_detection",
+          "title": "Category",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "created": {
+          "format": "date-time",
+          "title": "Created",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "start",
+        "end",
+        "created"
+      ],
+      "title": "EventSection",
+      "type": "object"
+    },
+    "HnidsSection": {
+      "properties": {
+        "predicted_class": {
+          "title": "Predicted Class",
+          "type": "string"
+        },
+        "probabilities": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Probabilities",
+          "type": "object"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "alert_threshold": {
+          "title": "Alert Threshold",
+          "type": "number"
+        },
+        "low_confidence": {
+          "title": "Low Confidence",
+          "type": "boolean"
+        },
+        "is_alert": {
+          "title": "Is Alert",
+          "type": "boolean"
+        },
+        "bundle_version": {
+          "title": "Bundle Version",
+          "type": "string"
+        },
+        "feature_schema_version": {
+          "title": "Feature Schema Version",
+          "type": "integer"
+        },
+        "session_key": {
+          "title": "Session Key",
+          "type": "string"
+        },
+        "correlation_key": {
+          "title": "Correlation Key",
+          "type": "string"
+        },
+        "validation_status": {
+          "enum": [
+            "ok",
+            "sanitized"
+          ],
+          "title": "Validation Status",
+          "type": "string"
+        },
+        "sanitized_values": {
+          "minimum": 0,
+          "title": "Sanitized Values",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "predicted_class",
+        "probabilities",
+        "confidence",
+        "alert_threshold",
+        "low_confidence",
+        "is_alert",
+        "bundle_version",
+        "feature_schema_version",
+        "session_key",
+        "correlation_key",
+        "validation_status",
+        "sanitized_values"
+      ],
+      "title": "HnidsSection",
+      "type": "object"
+    },
+    "ThreatSection": {
+      "properties": {
+        "framework": {
+          "const": "hnids-taxonomy",
+          "default": "hnids-taxonomy",
+          "title": "Framework",
+          "type": "string"
+        },
+        "technique_name": {
+          "title": "Technique Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "technique_name"
+      ],
+      "title": "ThreatSection",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "detection_id": {
+      "title": "Detection Id",
+      "type": "string"
+    },
+    "event": {
+      "$ref": "#/$defs/EventSection"
+    },
+    "threat": {
+      "$ref": "#/$defs/ThreatSection"
+    },
+    "hnids": {
+      "$ref": "#/$defs/HnidsSection"
+    }
+  },
+  "required": [
+    "detection_id",
+    "event",
+    "threat",
+    "hnids"
+  ],
+  "title": "DetectionEvent",
+  "type": "object"
+}

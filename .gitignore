@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Data and artifacts never enter git
+data/
+artifacts/
+quarantine/
+bundles/
+*.pt
+*.ckpt
+*.safetensors
+*.ubj
+*.parquet
+
+# Secrets
+.env
+kaggle.json
+
+# IDE
+.vscode/
+.idea/
+
+# Published model bundles are versioned in git (small, integrity-sealed).
+!models/**/*.safetensors
+!models/**/*.ubj

@@ -1,0 +1,11 @@
+2026-11-11T11:43:35Z start: {"active":"b20261111T112951Z","previous":"b20261111T103522Z","changed_at":"2026-11-11T11:36:06.800344+00:00","changed_by":"aadil"}
+2026-11-11T11:43:43Z service before: 2026-11-11 17:13:42 [info     ] bundle_loaded                  component=serving version=b20261111T112951Z
+200 {'ready': True, 'bundle_version': 'b20261111T112951Z'}
+2026-11-11T11:43:50Z rollback: {"active":"b20261111T103522Z","changed_at":"2026-11-11T11:43:49.446162+00:00","changed_by":"aadil","ok":true,"previous":"b20261111T112951Z"}
+2026-11-11T11:43:57Z service after rollback (fresh start): 2026-11-11 17:13:56 [info     ] bundle_loaded                  component=serving version=b20261111T103522Z
+200 {'ready': True, 'bundle_version': 'b20261111T103522Z'}
+2026-11-11T11:44:04Z re-activate run 2: {"active":"b20261111T112951Z","changed_at":"2026-11-11T11:44:03.354912+00:00","changed_by":"aadil","ok":true,"previous":"b20261111T103522Z"}
+2026-11-11T11:44:11Z service after re-activate: 2026-11-11 17:14:10 [info     ] bundle_loaded                  component=serving version=b20261111T112951Z
+200 {'ready': True, 'bundle_version': 'b20261111T112951Z'}
+2026-11-11T11:44:18Z activate tampered copy: {"error":{"code":"ARTIFACT_HASH_MISMATCH","details":{"files":["xgb.ubj"]},"message":"artifactfilesmodified:['xgb.ubj']"},"ok":false}
+2026-11-11T11:44:18Z pointer unchanged after refused activation: {"active":"b20261111T112951Z","previous":"b20261111T103522Z","changed_at":"2026-11-11T11:44:03.354912+00:00","changed_by":"aadil"}

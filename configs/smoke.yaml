@@ -1,0 +1,14 @@
+# Fast end-to-end smoke run on Kaggle GPU: first 40k rows of each day-file, small budgets.
+run:
+  name: hnids-smoke
+
+data:
+  max_rows_per_file: 40000
+
+xgboost:
+  n_folds: 3
+  n_estimators: 60
+
+training:
+  epochs: 2
+  max_train_windows: 100000

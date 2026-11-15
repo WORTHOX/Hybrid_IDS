@@ -1,0 +1,78 @@
+[
+  {
+    "schema_version": "1",
+    "detection_id": "a5c7d97c-7418-4364-9316-567f75eb824a",
+    "event": {
+      "kind": "signal",
+      "category": "intrusion_detection",
+      "start": "2017-07-04T09:43:00Z",
+      "end": "2017-07-04T09:43:00Z",
+      "created": "2026-11-11T13:02:25.763040Z"
+    },
+    "threat": {
+      "framework": "hnids-taxonomy",
+      "technique_name": "BENIGN"
+    },
+    "hnids": {
+      "predicted_class": "BENIGN",
+      "probabilities": {
+        "BENIGN": 0.999711,
+        "DoS": 6.8e-05,
+        "DDoS": 5e-06,
+        "PortScan": 0.000106,
+        "BruteForce": 3.1e-05,
+        "WebAttack": 3e-05,
+        "Bot": 2.2e-05,
+        "Rare": 2.6e-05
+      },
+      "confidence": 0.999710853571648,
+      "alert_threshold": 0.5,
+      "low_confidence": false,
+      "is_alert": false,
+      "bundle_version": "b20261111T112951Z",
+      "feature_schema_version": 1,
+      "session_key": "9198041a5b05e6e1",
+      "correlation_key": "5827ddf041a87095",
+      "validation_status": "ok",
+      "sanitized_values": 0
+    }
+  },
+  {
+    "schema_version": "1",
+    "detection_id": "77f49954-c1c7-4ab6-95b6-c8fceae8ba7b",
+    "event": {
+      "kind": "alert",
+      "category": "intrusion_detection",
+      "start": "2017-07-07T16:15:00Z",
+      "end": "2017-07-07T16:15:00Z",
+      "created": "2026-11-11T13:02:25.764037Z"
+    },
+    "threat": {
+      "framework": "hnids-taxonomy",
+      "technique_name": "DDoS"
+    },
+    "hnids": {
+      "predicted_class": "DDoS",
+      "probabilities": {
+        "BENIGN": 0.0,
+        "DoS": 0.0,
+        "DDoS": 0.999994,
+        "PortScan": 0.0,
+        "BruteForce": 0.0,
+        "WebAttack": 0.0,
+        "Bot": 2e-06,
+        "Rare": 4e-06
+      },
+      "confidence": 0.9999935116555528,
+      "alert_threshold": 0.5,
+      "low_confidence": false,
+      "is_alert": true,
+      "bundle_version": "b20261111T112951Z",
+      "feature_schema_version": 1,
+      "session_key": "fc12b050e24a404d",
+      "correlation_key": "225626bec72db12f",
+      "validation_status": "ok",
+      "sanitized_values": 0
+    }
+  }
+]

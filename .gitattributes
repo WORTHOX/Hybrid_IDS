@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.parquet binary
+*.safetensors binary
+*.ubj binary
+# Model bundles are sealed by SHA-256 manifests: git must never rewrite their bytes.
+models/** -text binary

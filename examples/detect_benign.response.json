@@ -1,0 +1,38 @@
+{
+  "schema_version": "1",
+  "detection_id": "a0126600-32f2-4372-91f9-57648c74df00",
+  "event": {
+    "kind": "signal",
+    "category": "intrusion_detection",
+    "start": "2017-07-04T09:43:00Z",
+    "end": "2017-07-04T09:43:00Z",
+    "created": "2026-11-11T13:02:25.561815Z"
+  },
+  "threat": {
+    "framework": "hnids-taxonomy",
+    "technique_name": "BENIGN"
+  },
+  "hnids": {
+    "predicted_class": "BENIGN",
+    "probabilities": {
+      "BENIGN": 0.999711,
+      "DoS": 6.8e-05,
+      "DDoS": 5e-06,
+      "PortScan": 0.000106,
+      "BruteForce": 3.1e-05,
+      "WebAttack": 3e-05,
+      "Bot": 2.2e-05,
+      "Rare": 2.6e-05
+    },
+    "confidence": 0.9997108533739305,
+    "alert_threshold": 0.5,
+    "low_confidence": false,
+    "is_alert": false,
+    "bundle_version": "b20261111T112951Z",
+    "feature_schema_version": 1,
+    "session_key": "9198041a5b05e6e1",
+    "correlation_key": "5827ddf041a87095",
+    "validation_status": "ok",
+    "sanitized_values": 0
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "1",
+  "detection_id": "aca263f8-2645-4171-a8f5-e81955cfdd71",
+  "event": {
+    "kind": "alert",
+    "category": "intrusion_detection",
+    "start": "2017-07-06T10:15:00Z",
+    "end": "2017-07-06T10:15:00Z",
+    "created": "2026-11-11T13:02:25.703386Z"
+  },
+  "threat": {
+    "framework": "hnids-taxonomy",
+    "technique_name": "WebAttack"
+  },
+  "hnids": {
+    "predicted_class": "WebAttack",
+    "probabilities": {
+      "BENIGN": 0.000271,
+      "DoS": 4e-06,
+      "DDoS": 1.7e-05,
+      "PortScan": 7e-06,
+      "BruteForce": 1.1e-05,
+      "WebAttack": 0.999667,
+      "Bot": 1.1e-05,
+      "Rare": 1.1e-05
+    },
+    "confidence": 0.99966743603826,
+    "alert_threshold": 0.5,
+    "low_confidence": false,
+    "is_alert": true,
+    "bundle_version": "b20261111T112951Z",
+    "feature_schema_version": 1,
+    "session_key": "782fbdaf6c52da96",
+    "correlation_key": "b8f5403e867efec6",
+    "validation_status": "ok",
+    "sanitized_values": 0
+  }
+}

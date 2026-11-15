@@ -1,0 +1,64 @@
+# Behavior-relevant defaults shared by every environment. Paths come from a profile file.
+schema_version: 1
+
+run:
+  name: hnids-base
+  seed: 42
+  deterministic: true
+  log_level: INFO
+  log_json: true
+
+data:
+  source_glob: "**/*.pcap_ISCX.csv"   # TrafficLabelling day-files (ADR-0003)
+  encoding: cp1252
+  chunk_rows: 200000
+
+split:            # ADR-0001 (accepted 2026-11-11)
+  block_minutes: 5
+  train_ratio: 0.70
+  val_ratio: 0.15
+  test_ratio: 0.15
+  purge_minutes: 0
+  stratify_by: label_raw
+
+sequence:
+  length: 20
+
+xgboost:
+  n_folds: 5
+  n_estimators: 400
+  max_depth: 8
+  learning_rate: 0.1
+  subsample: 0.8
+  colsample_bytree: 0.8
+  early_stopping_rounds: 30
+  device: auto
+
+model:            # FR-7 defaults
+  gru_hidden: 128
+  gru_layers: 2
+  d_model: 256
+  n_heads: 4
+  ff_dim: 512
+  transformer_layers: 2
+  dropout: 0.2
+
+training:
+  epochs: 30
+  batch_size: 512
+  learning_rate: 0.001
+  weight_decay: 0.01
+  early_stopping_patience: 5
+  lr_reduce_factor: 0.5
+  lr_reduce_patience: 2
+  amp: true
+  grad_clip_norm: 1.0
+
+serving:
+  host: 127.0.0.1
+  port: 8000
+  max_batch: 256
+  buffer_ttl_seconds: 300
+  max_buffers: 10000
+  alert_threshold: 0.5
+  low_confidence_threshold: 0.6

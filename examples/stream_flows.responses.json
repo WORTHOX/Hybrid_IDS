@@ -1,0 +1,139 @@
+[
+  {
+    "buffered": 1,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 2,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 3,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 4,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 5,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 6,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 7,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 8,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 9,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 10,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 11,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 12,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 13,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 14,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 15,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 16,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 17,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 18,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 19,
+    "window_length": 20,
+    "detection": null
+  },
+  {
+    "buffered": 20,
+    "window_length": 20,
+    "detection": {
+      "schema_version": "1",
+      "detection_id": "eda233b8-4614-40ee-87b9-81c75f8c80f2",
+      "event": {
+        "kind": "alert",
+        "category": "intrusion_detection",
+        "start": "2017-07-07T14:55:00Z",
+        "end": "2017-07-07T14:55:00Z",
+        "created": "2026-11-11T13:02:25.965318Z"
+      },
+      "threat": {
+        "framework": "hnids-taxonomy",
+        "technique_name": "PortScan"
+      },
+      "hnids": {
+        "predicted_class": "PortScan",
+        "probabilities": {
+          "BENIGN": 0.000567,
+          "DoS": 7.5e-05,
+          "DDoS": 0.0,
+          "PortScan": 0.999324,
+          "BruteForce": 1e-06,
+          "WebAttack": 1.1e-05,
+          "Bot": 2.2e-05,
+          "Rare": 0.0
+        },
+        "confidence": 0.9993241634050335,
+        "alert_threshold": 0.5,
+        "low_confidence": false,
+        "is_alert": true,
+        "bundle_version": "b20261111T112951Z",
+        "feature_schema_version": 1,
+        "session_key": "6734aeb18faf55c4",
+        "correlation_key": "70b85a5957296720",
+        "validation_status": "ok",
+        "sanitized_values": 0
+      }
+    }
+  }
+]

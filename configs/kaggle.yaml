@@ -1,0 +1,21 @@
+# Kaggle kernel profile (ADR-0005). /kaggle/input is read-only; outputs persist only from
+# /kaggle/working. Newer Kaggle images mount datasets under /kaggle/input/datasets/<owner>/<slug>,
+# so the whole /kaggle/input tree is the read root and discovery uses data.source_glob.
+run:
+  name: hnids-kaggle
+  log_json: true
+
+paths:
+  data_roots: [/kaggle/input]
+  artifact_root: /kaggle/working/artifacts
+  quarantine_root: /kaggle/working/quarantine
+  scratch_root: /kaggle/tmp
+
+data:
+  source_glob: "**/TrafficLabelling*/*.pcap_ISCX.csv"
+
+xgboost:
+  device: cuda
+
+training:
+  require_gpu: true
