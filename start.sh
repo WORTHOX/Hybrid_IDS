@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-PORT="${PORT:-3000}"
+PORT="${PORT:-10000}"
 API_PORT="${API_PORT:-8000}"
 export HNIDS_API_KEY="${HNIDS_API_KEY:-dev-local-key}"
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"

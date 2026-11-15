@@ -21,7 +21,7 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PATH="/app/.venv/bin:$PATH" \
-    PORT=3000 \
+    PORT=10000 \
     API_PORT=8000 \
     OMP_NUM_THREADS=1 \
     MKL_NUM_THREADS=1 \
@@ -45,8 +45,8 @@ COPY start.sh ./
 # Set permissions
 RUN chmod +x ./start.sh
 
-# Expose web service ports (3000 for standard/Render, 7860 for Hugging Face Spaces)
-EXPOSE 3000 7860
+# Expose web service ports (10000 for Render default, 3000 for local)
+EXPOSE 10000 3000
 
 # Health check against proxy readiness
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \
