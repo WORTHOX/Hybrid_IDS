@@ -36,6 +36,8 @@ class DashboardHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self) -> None:
         if self.path.startswith("/api/"):
             self._proxy("GET")
+        elif self.path in ("/docs", "/openapi.json", "/redoc") or self.path.startswith("/docs"):
+            self._proxy("GET", override_path=self.path)
         elif self.path.startswith("/examples/"):
             self._serve_example()
         else:
@@ -47,9 +49,9 @@ class DashboardHandler(http.server.SimpleHTTPRequestHandler):
         else:
             self.send_error(405)
 
-    def _proxy(self, method: str) -> None:
-        """Proxy /api/* to the backend, stripping the /api prefix."""
-        backend_path = self.path[4:]  # Remove /api prefix
+    def _proxy(self, method: str, override_path: str | None = None) -> None:
+        """Proxy /api/* to the backend, stripping the /api prefix, or direct paths like /docs."""
+        backend_path = override_path if override_path is not None else self.path[4:]  # Remove /api prefix
         url = f"{API_BASE}{backend_path}"
 
         headers = {}

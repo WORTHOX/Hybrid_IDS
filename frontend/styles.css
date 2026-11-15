@@ -225,6 +225,32 @@ body {
   gap: var(--sp-sm);
 }
 
+.nav-docs-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background-color: var(--night-2);
+  border: 1px solid var(--night-line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--paper);
+  text-decoration: none;
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.nav-docs-link:hover {
+  background-color: var(--night-3);
+  border-color: var(--oc-blue);
+  color: var(--paper-bright);
+}
+
+.docs-icon {
+  color: var(--oc-cyan);
+}
+
 .sensor-pill {
   display: flex;
   align-items: center;
