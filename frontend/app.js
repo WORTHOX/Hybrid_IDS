@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   HNIDS Dashboard — Client Application
+   HNIDS — Client Application Engine
    Routes through /api/* proxy → FastAPI backend
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -9,30 +9,38 @@
   // ─── Configuration ───
   const API_BASE = '/api';
 
-  const CLASSES = ['BENIGN', 'DoS', 'DDoS', 'PortScan', 'BruteForce', 'WebAttack', 'Bot', 'Rare'];
+  const CLASSES = [
+    'BENIGN',
+    'DoS',
+    'DDoS',
+    'PortScan',
+    'BruteForce',
+    'WebAttack',
+    'Bot',
+    'Rare'
+  ];
 
-  // Muted, professional palette matching CSS tokens
-  const CLASS_COLOURS = {
-    BENIGN:     'var(--c-benign)',
-    DoS:        'var(--c-dos)',
-    DDoS:       'var(--c-ddos)',
-    PortScan:   'var(--c-portscan)',
-    BruteForce: 'var(--c-bruteforce)',
-    WebAttack:  'var(--c-webattack)',
-    Bot:        'var(--c-bot)',
-    Rare:       'var(--c-rare)',
+  // Palette matching CSS tokens
+  const CLASS_HEX = {
+    BENIGN:     '#4A6741', // Deep Olive
+    DoS:        '#A0522D', // Sienna
+    DDoS:       '#8B3A3A', // Deep Rust
+    PortScan:   '#9B7A3A', // Ochre
+    BruteForce: '#7A4A5A', // Wine Mauve
+    WebAttack:  '#8B4A3A', // Terracotta
+    Bot:        '#3D4E6D', // Slate Indigo
+    Rare:       '#6A5A7A', // Amethyst Slate
   };
 
-  // Hex versions for inline styles where CSS vars aren't available
-  const CLASS_HEX = {
-    BENIGN:     '#5C6E4C',
-    DoS:        '#C8613E',
-    DDoS:       '#9E3B3B',
-    PortScan:   '#B08D57',
-    BruteForce: '#8B4E5A',
-    WebAttack:  '#A0523C',
-    Bot:        '#3D4E6D',
-    Rare:       '#7A6B8A',
+  const CLASS_SHORT_CODES = {
+    BENIGN:     '01',
+    DoS:        '02',
+    DDoS:       '03',
+    PortScan:   '04',
+    BruteForce: '05',
+    WebAttack:  '06',
+    Bot:        '07',
+    Rare:       '08',
   };
 
   // ─── State ───
@@ -52,123 +60,138 @@
   const $$ = (sel) => document.querySelectorAll(sel);
 
   const dom = {
-    statusMark:      $('#status-mark'),
-    statusText:      $('#status-text'),
-    bundleVersion:   $('#bundle-version'),
-    totalRequests:   $('#total-requests'),
-    totalAlerts:     $('#total-alerts'),
-    avgConfidence:   $('#avg-confidence'),
-    distribution:    $('#distribution'),
-    detectionFeed:   $('#detection-feed'),
-    detectionCount:  $('#detection-count'),
-    detectInput:     $('#detect-input'),
-    apiKeyDetect:    $('#api-key-detect'),
-    btnDetect:       $('#btn-detect'),
-    btnLoadExample:  $('#btn-load-example'),
+    statusMark:        $('#status-mark'),
+    statusText:        $('#status-text'),
+    bundleVersion:     $('#bundle-version'),
+    totalRequests:     $('#total-requests'),
+    totalAlerts:       $('#total-alerts'),
+    avgConfidence:     $('#avg-confidence'),
+    distribution:      $('#distribution'),
+    detectionFeed:     $('#detection-feed'),
+    detectionCount:    $('#detection-count'),
+    detectInput:       $('#detect-input'),
+    apiKeyDetect:      $('#api-key-detect'),
+    btnDetect:         $('#btn-detect'),
+    btnLoadExample:    $('#btn-load-example'),
     resultPlaceholder: $('#result-placeholder'),
-    resultContent:   $('#result-content'),
-    resultClass:     $('#result-class'),
-    resultConfidence: $('#result-confidence'),
-    resultDetails:   $('#result-details'),
-    resultProbs:     $('#result-probs'),
-    streamInput:     $('#stream-input'),
-    apiKeyStream:    $('#api-key-stream'),
-    btnStream:       $('#btn-stream'),
-    bufferFill:      $('#buffer-fill'),
-    bufferLabel:     $('#buffer-label'),
-    streamLog:       $('#stream-log'),
+    resultContent:     $('#result-content'),
+    resultClass:       $('#result-class'),
+    resultConfidence:  $('#result-confidence'),
+    resultDetails:     $('#result-details'),
+    resultProbs:       $('#result-probs'),
+    streamInput:       $('#stream-input'),
+    apiKeyStream:      $('#api-key-stream'),
+    btnStream:         $('#btn-stream'),
+    bufferFill:        $('#buffer-fill'),
+    bufferLabel:       $('#buffer-label'),
+    streamLog:         $('#stream-log'),
     btnRefreshMetrics: $('#btn-refresh-metrics'),
-    metricsContent:  $('#metrics-content'),
-    toast:           $('#toast'),
-    toastText:       $('#toast-text'),
-    toastClose:      $('#toast-close'),
+    metricsContent:    $('#metrics-content'),
+    toast:             $('#toast'),
+    toastText:         $('#toast-text'),
+    toastClose:        $('#toast-close'),
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  NAVIGATION
+  //  1. NAVIGATION (TABS + KEYBOARD [1-4])
   // ═══════════════════════════════════════════════════════════════════════════
   function initNav() {
-    const navLinks = $$('.nav-link');
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
+    const navBtns = $$('.nav-btn');
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const view = link.dataset.view;
-        navLinks.forEach(l => {
-          l.classList.toggle('active', l === link);
-          l.removeAttribute('aria-current');
-        });
-        link.setAttribute('aria-current', 'page');
-        $$('.view').forEach(v => v.classList.toggle('active', v.id === `view-${view}`));
-        if (view === 'metrics') loadMetrics();
+        const view = btn.dataset.view;
+        switchTab(view);
       });
     });
 
-    // Keyboard shortcuts (1-4)
+    // Keyboard navigation (Keys 1-4)
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      const idx = parseInt(e.key) - 1;
-      if (idx >= 0 && idx < navLinks.length) {
-        navLinks[idx].click();
+      const idx = parseInt(e.key, 10) - 1;
+      if (idx >= 0 && idx < navBtns.length) {
+        navBtns[idx].click();
       }
     });
   }
 
+  function switchTab(viewName) {
+    const navBtns = $$('.nav-btn');
+    navBtns.forEach(b => {
+      const isMatch = b.dataset.view === viewName;
+      b.classList.toggle('active', isMatch);
+      b.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+    });
+
+    $$('.view').forEach(v => {
+      const isMatch = v.id === `view-${viewName}`;
+      v.classList.toggle('active', isMatch);
+    });
+
+    if (viewName === 'metrics') {
+      loadMetrics();
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
-  //  DISTRIBUTION — quiet allocation-style bars
+  //  2. OVERCLOCK POSTER WALL (8-COLUMN MATRIX)
   // ═══════════════════════════════════════════════════════════════════════════
-  function buildDistribution() {
+  function buildPosterWall() {
     if (!dom.distribution) return;
     dom.distribution.innerHTML = CLASSES.map(cls => `
-      <div class="dist-row" data-class="${cls}">
-        <span class="dist-label">${cls}</span>
-        <div class="dist-track">
-          <div class="dist-fill" id="dist-fill-${cls}" style="width: 0%; background: ${CLASS_HEX[cls]}"></div>
+      <div class="poster-tile" data-class="${cls}">
+        <span class="poster-tile__key" aria-hidden="true">${CLASS_SHORT_CODES[cls]}</span>
+        <span class="poster-tile__label">${cls}</span>
+        <div class="poster-tile__num" id="poster-num-${cls}">0</div>
+        <div class="poster-tile__bar-wrap">
+          <div class="poster-tile__bar-fill" id="poster-bar-${cls}" style="width: 0%; background-color: ${CLASS_HEX[cls]};"></div>
         </div>
-        <span class="dist-value" id="dist-val-${cls}">0</span>
+        <span class="poster-tile__pct" id="poster-pct-${cls}">0.0%</span>
       </div>
     `).join('');
   }
 
-  function updateDistribution() {
+  function updatePosterWall() {
     const total = Math.max(1, Object.values(state.classCounts).reduce((a, b) => a + b, 0));
     CLASSES.forEach(cls => {
       const count = state.classCounts[cls];
       const pct = (count / total * 100).toFixed(1);
-      const fillEl = $(`#dist-fill-${cls}`);
-      const valEl = $(`#dist-val-${cls}`);
-      if (fillEl) fillEl.style.width = `${pct}%`;
-      if (valEl) valEl.textContent = count;
+      const numEl = $(`#poster-num-${cls}`);
+      const barEl = $(`#poster-bar-${cls}`);
+      const pctEl = $(`#poster-pct-${cls}`);
+
+      if (numEl) numEl.textContent = count;
+      if (barEl) barEl.style.width = `${pct}%`;
+      if (pctEl) pctEl.textContent = `${pct}%`;
     });
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  HEALTH CHECK
+  //  3. HEALTH CHECK & SYSTEM READINESS
   // ═══════════════════════════════════════════════════════════════════════════
   async function checkHealth() {
     try {
       const res = await fetch(`${API_BASE}/readyz`);
       const data = await res.json();
       if (data.ready) {
-        dom.statusMark.className = 'status-mark ok';
-        dom.statusText.textContent = 'ready';
-        if (dom.bundleVersion) {
-          dom.bundleVersion.textContent = data.bundle_version || '—';
-        }
+        if (dom.statusMark) dom.statusMark.className = 'status-mark ok';
+        if (dom.statusText) dom.statusText.textContent = 'SYSTEM READY';
+        if (dom.bundleVersion) dom.bundleVersion.textContent = data.bundle_version || 'b20261111T112951Z';
         return true;
       } else {
-        dom.statusMark.className = 'status-mark bad';
-        dom.statusText.textContent = 'not ready';
+        if (dom.statusMark) dom.statusMark.className = 'status-mark bad';
+        if (dom.statusText) dom.statusText.textContent = 'NOT READY';
         return false;
       }
     } catch {
-      dom.statusMark.className = 'status-mark bad';
-      dom.statusText.textContent = 'offline';
+      if (dom.statusMark) dom.statusMark.className = 'status-mark bad';
+      if (dom.statusText) dom.statusText.textContent = 'OFFLINE';
       return false;
     }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  API CALLS
+  //  4. API CLIENT
   // ═══════════════════════════════════════════════════════════════════════════
   async function apiPost(endpoint, body, apiKey) {
     const headers = { 'Content-Type': 'application/json' };
@@ -186,21 +209,21 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  DETECT
+  //  5. DETECTION VIEW LOGIC
   // ═══════════════════════════════════════════════════════════════════════════
   async function runDetect() {
     const raw = dom.detectInput.value.trim();
-    if (!raw) return showToast('Paste a JSON payload first.');
+    if (!raw) return showToast('Input required: paste JSON window payload.');
 
     let payload;
     try {
       payload = JSON.parse(raw);
     } catch {
-      return showToast('Invalid JSON — check your payload.');
+      return showToast('Malformed JSON: verify syntax.');
     }
 
     dom.btnDetect.disabled = true;
-    dom.btnDetect.textContent = 'Detecting…';
+    dom.btnDetect.innerHTML = '<span class="btn__key">…</span> EVALUATING';
 
     try {
       const result = await apiPost('/v1/detect', payload, dom.apiKeyDetect.value);
@@ -208,48 +231,55 @@
       recordDetection(result);
       showResult(result);
     } catch (err) {
-      showToast(`Detection failed — ${err.message}`);
+      showToast(`Detection Error: ${err.message}`);
     } finally {
       dom.btnDetect.disabled = false;
-      dom.btnDetect.textContent = 'Detect';
+      dom.btnDetect.innerHTML = '<span class="btn__key" aria-hidden="true">⏎</span> RUN DETECTION';
     }
   }
 
   function showResult(event) {
+    if (!dom.resultPlaceholder || !dom.resultContent) return;
     dom.resultPlaceholder.classList.add('hidden');
     dom.resultContent.classList.remove('hidden');
 
     const cls = event.hnids.predicted_class;
     const conf = event.hnids.confidence;
+    const color = CLASS_HEX[cls] || '#1C1A17';
 
     dom.resultClass.textContent = cls;
-    dom.resultClass.style.color = CLASS_HEX[cls] || '#1C1A17';
+    dom.resultClass.style.color = color;
 
-    dom.resultConfidence.textContent = `${(conf * 100).toFixed(2)}% confidence`;
+    dom.resultConfidence.textContent = `${(conf * 100).toFixed(2)}% CONFIDENCE`;
+    dom.resultConfidence.style.color = conf >= 0.9 ? 'var(--c-ok)' : conf >= 0.6 ? 'var(--bronze)' : 'var(--c-alert)';
 
-    // Details grid
+    // Key-Value Grid
     dom.resultDetails.innerHTML = [
-      ['Kind', event.event.kind],
-      ['Alert', event.hnids.is_alert ? 'Yes' : 'No'],
-      ['Bundle', event.hnids.bundle_version],
-      ['Validation', event.hnids.validation_status],
-      ['Sanitized', event.hnids.sanitized_values],
-      ['Detection', event.detection_id.slice(0, 8) + '…'],
-    ].map(([k, v]) =>
-      `<span class="result-details__key">${k}</span><span class="result-details__val">${v}</span>`
-    ).join('');
+      ['EVENT KIND', event.event.kind.toUpperCase()],
+      ['ALERT STATUS', event.hnids.is_alert ? 'ACTION REQUIRED' : 'NORMAL'],
+      ['BUNDLE VERSION', event.hnids.bundle_version],
+      ['VALIDATION', event.hnids.validation_status.toUpperCase()],
+      ['SANITIZED VALUES', event.hnids.sanitized_values],
+      ['DETECTION REF', event.detection_id.slice(0, 12)],
+    ].map(([k, v]) => `
+      <div class="result-meta-row">
+        <span class="result-meta-row__key">${k}</span>
+        <span class="result-meta-row__val">${v}</span>
+      </div>
+    `).join('');
 
-    // Probability bars
-    const probs = event.hnids.probabilities;
+    // Probabilities breakdown
+    const probs = event.hnids.probabilities || {};
     dom.resultProbs.innerHTML = Object.entries(probs)
       .sort((a, b) => b[1] - a[1])
       .map(([name, prob]) => {
         const pct = (prob * 100).toFixed(2);
+        const pColor = CLASS_HEX[name] || 'var(--ink-muted)';
         return `
           <div class="prob-row">
             <span class="prob-row__label">${name}</span>
-            <div class="prob-row__bar">
-              <div class="prob-row__bar-fill" style="width: ${pct}%; background: ${CLASS_HEX[name] || '#A89F93'}"></div>
+            <div class="prob-row__track">
+              <div class="prob-row__fill" style="width: ${pct}%; background-color: ${pColor};"></div>
             </div>
             <span class="prob-row__val">${pct}%</span>
           </div>
@@ -257,33 +287,222 @@
       }).join('');
   }
 
-  // ─── Load Example ───
-  async function loadExample() {
+  // Preset Sample Loader
+  async function loadPresetSample(sampleKey) {
+    const filenameMap = {
+      ddos:      'detect_ddos.request.json',
+      dos:       'detect_dos.request.json',
+      benign:    'detect_benign.request.json',
+      portscan:  'detect_portscan.request.json',
+      webattack: 'detect_webattack.request.json',
+    };
+
+    const targetFile = filenameMap[sampleKey] || 'detect_ddos.request.json';
+
     try {
-      const examples = [
-        'detect_ddos.request.json',
-        'detect_dos.request.json',
-        'detect_benign.request.json',
-        'detect_portscan.request.json',
-        'detect_webattack.request.json',
-      ];
-      const pick = examples[Math.floor(Math.random() * examples.length)];
-      const res = await fetch(`/examples/${pick}`);
+      const res = await fetch(`/examples/${targetFile}`);
       if (res.ok) {
         const data = await res.json();
         dom.detectInput.value = JSON.stringify(data, null, 2);
+        showToast(`Loaded ${sampleKey.toUpperCase()} sample window.`);
       } else {
-        dom.detectInput.value = JSON.stringify(EXAMPLE_PAYLOAD, null, 2);
+        dom.detectInput.value = JSON.stringify(FALLBACK_PAYLOAD, null, 2);
       }
     } catch {
-      dom.detectInput.value = JSON.stringify(EXAMPLE_PAYLOAD, null, 2);
+      dom.detectInput.value = JSON.stringify(FALLBACK_PAYLOAD, null, 2);
     }
   }
 
-  // Minimal example payload
-  const EXAMPLE_PAYLOAD = {
+  function initSampleChips() {
+    const chips = $$('.sample-chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const sample = chip.dataset.sample;
+        loadPresetSample(sample);
+      });
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  6. STREAM VIEW LOGIC
+  // ═══════════════════════════════════════════════════════════════════════════
+  async function pushFlow() {
+    const raw = dom.streamInput.value.trim();
+    if (!raw) return showToast('Flow record JSON required.');
+
+    let payload;
+    try {
+      payload = JSON.parse(raw);
+    } catch {
+      return showToast('Malformed flow JSON record.');
+    }
+
+    dom.btnStream.disabled = true;
+
+    try {
+      const result = await apiPost('/v1/flows', payload, dom.apiKeyStream.value);
+      state.bufferCount = result.buffered;
+      state.windowLength = result.window_length;
+      updateBuffer();
+
+      const time = new Date().toLocaleTimeString();
+      let logHtml = '';
+
+      if (result.detection) {
+        recordDetection(result.detection);
+        const cls = result.detection.hnids.predicted_class;
+        const conf = (result.detection.hnids.confidence * 100).toFixed(1);
+        logHtml = `
+          <div class="stream-event-item stream-event-item--alert">
+            <span class="stream-event-time">${time}</span>
+            <span class="stream-event-msg">⚡ DETECTION WINDOW FIRED: <strong>${cls}</strong> (${conf}%)</span>
+          </div>
+        `;
+        state.bufferCount = 0;
+        updateBuffer();
+      } else {
+        logHtml = `
+          <div class="stream-event-item">
+            <span class="stream-event-time">${time}</span>
+            <span class="stream-event-msg">Flow buffered [${result.buffered} / ${result.window_length}]</span>
+          </div>
+        `;
+      }
+
+      const logEl = dom.streamLog;
+      const emptyEl = logEl.querySelector('.feed-empty');
+      if (emptyEl) emptyEl.remove();
+      logEl.insertAdjacentHTML('afterbegin', logHtml);
+
+    } catch (err) {
+      showToast(`Stream push error: ${err.message}`);
+    } finally {
+      dom.btnStream.disabled = false;
+    }
+  }
+
+  function updateBuffer() {
+    const pct = Math.min(100, (state.bufferCount / state.windowLength) * 100);
+    if (dom.bufferFill) {
+      dom.bufferFill.style.width = `${pct}%`;
+      dom.bufferFill.style.backgroundColor = pct >= 80 ? 'var(--c-alert)' : 'var(--bronze)';
+    }
+    if (dom.bufferLabel) {
+      dom.bufferLabel.textContent = `${state.bufferCount} / ${state.windowLength}`;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  7. INCIDENT RECORDING & DASHBOARD UPDATES
+  // ═══════════════════════════════════════════════════════════════════════════
+  function recordDetection(event) {
+    const cls = event.hnids.predicted_class;
+    const conf = event.hnids.confidence;
+    const isAlert = event.hnids.is_alert;
+
+    state.detections.unshift(event);
+    if (state.detections.length > 80) state.detections.pop();
+
+    state.classCounts[cls] = (state.classCounts[cls] || 0) + 1;
+    if (isAlert) state.totalAlerts++;
+    state.confidenceSum += conf;
+    state.confidenceCount++;
+
+    updateDashboard();
+    addFeedEntry(event);
+
+    if (isAlert && cls !== 'BENIGN') {
+      showToast(`${cls} incident detected (${(conf * 100).toFixed(1)}% conf)`);
+    }
+  }
+
+  function updateDashboard() {
+    if (dom.totalRequests) dom.totalRequests.textContent = state.totalRequests;
+    if (dom.totalAlerts) dom.totalAlerts.textContent = state.totalAlerts;
+
+    if (state.confidenceCount > 0 && dom.avgConfidence) {
+      const avg = (state.confidenceSum / state.confidenceCount * 100).toFixed(1);
+      dom.avgConfidence.textContent = `${avg}%`;
+    }
+
+    if (dom.detectionCount) dom.detectionCount.textContent = state.detections.length;
+    updatePosterWall();
+  }
+
+  function addFeedEntry(event) {
+    const feed = dom.detectionFeed;
+    if (!feed) return;
+    const empty = feed.querySelector('.feed-empty');
+    if (empty) empty.remove();
+
+    const cls = event.hnids.predicted_class;
+    const conf = (event.hnids.confidence * 100).toFixed(1);
+    const kind = event.event.kind;
+    const isAlert = event.hnids.is_alert;
+    const time = new Date(event.event.created).toLocaleTimeString();
+    const tagClass = isAlert ? 'entry-tag--alert' : 'entry-tag--signal';
+    const tagText = isAlert ? 'ALERT' : 'SIGNAL';
+
+    const entry = document.createElement('div');
+    entry.className = 'detection-entry';
+    entry.innerHTML = `
+      <span class="entry-tag ${tagClass}">${tagText}</span>
+      <span class="entry-class" style="color: ${CLASS_HEX[cls] || 'var(--ink)'};">${cls}</span>
+      <span class="entry-conf">${conf}%</span>
+      <span class="entry-time">${time}</span>
+    `;
+
+    feed.insertBefore(entry, feed.firstChild);
+
+    while (feed.children.length > 50) {
+      feed.removeChild(feed.lastChild);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  8. METRICS
+  // ═══════════════════════════════════════════════════════════════════════════
+  async function loadMetrics() {
+    if (!dom.metricsContent) return;
+    dom.metricsContent.textContent = 'Querying Prometheus /metrics exporter…';
+    try {
+      const res = await fetch(`${API_BASE}/metrics`);
+      if (res.ok) {
+        const text = await res.text();
+        dom.metricsContent.textContent = text || 'No metrics returned.';
+      } else {
+        dom.metricsContent.textContent = `HTTP ${res.status}: Exporter endpoint unavailable.`;
+      }
+    } catch {
+      dom.metricsContent.textContent = 'Connection refused on metrics endpoint.';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  //  9. TOAST
+  // ═══════════════════════════════════════════════════════════════════════════
+  let toastTimer = null;
+
+  function showToast(msg) {
+    if (!dom.toast || !dom.toastText) return;
+    dom.toastText.textContent = msg;
+    dom.toast.classList.remove('hidden');
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      dom.toast.classList.add('hidden');
+    }, 4500);
+  }
+
+  function hideToast() {
+    if (dom.toast) dom.toast.classList.add('hidden');
+    clearTimeout(toastTimer);
+  }
+
+  // ─── Minimal Fallback Payload ───
+  const FALLBACK_PAYLOAD = {
     "flows": Array.from({ length: 20 }, (_, i) => ({
-      "session_id": "demo-session-001",
+      "session_id": "seed-001",
       "timestamp": new Date(Date.now() + i * 1000).toISOString(),
       "features": {
         "protocol": 6, "flow_duration": 100000 + i * 1000,
@@ -333,210 +552,47 @@
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  STREAM
-  // ═══════════════════════════════════════════════════════════════════════════
-  async function pushFlow() {
-    const raw = dom.streamInput.value.trim();
-    if (!raw) return showToast('Paste a flow record first.');
-
-    let payload;
-    try {
-      payload = JSON.parse(raw);
-    } catch {
-      return showToast('Invalid JSON — check your flow record.');
-    }
-
-    dom.btnStream.disabled = true;
-
-    try {
-      const result = await apiPost('/v1/flows', payload, dom.apiKeyStream.value);
-      state.bufferCount = result.buffered;
-      state.windowLength = result.window_length;
-      updateBuffer();
-
-      const time = new Date().toLocaleTimeString();
-      let logHtml = '';
-
-      if (result.detection) {
-        recordDetection(result.detection);
-        logHtml = `
-          <div class="stream-entry stream-entry--alert">
-            <span class="stream-entry__time">${time}</span>
-            <span class="stream-entry__text">Detection: ${result.detection.hnids.predicted_class} (${(result.detection.hnids.confidence * 100).toFixed(1)}%)</span>
-          </div>
-        `;
-        state.bufferCount = 0;
-        updateBuffer();
-      } else {
-        logHtml = `
-          <div class="stream-entry">
-            <span class="stream-entry__time">${time}</span>
-            <span class="stream-entry__text">Buffered: ${result.buffered} / ${result.window_length}</span>
-          </div>
-        `;
-      }
-
-      const logEl = dom.streamLog;
-      const isEmpty = logEl.querySelector('.feed-empty');
-      if (isEmpty) isEmpty.remove();
-      logEl.insertAdjacentHTML('afterbegin', logHtml);
-
-    } catch (err) {
-      showToast(`Stream failed — ${err.message}`);
-    } finally {
-      dom.btnStream.disabled = false;
-    }
-  }
-
-  function updateBuffer() {
-    const pct = Math.min(100, (state.bufferCount / state.windowLength) * 100);
-    if (dom.bufferFill) dom.bufferFill.style.width = `${pct}%`;
-    if (dom.bufferLabel) dom.bufferLabel.textContent = `${state.bufferCount} / ${state.windowLength}`;
-
-    // Change fill colour when nearing full
-    if (dom.bufferFill) {
-      dom.bufferFill.style.background = pct >= 80 ? 'var(--persimmon)' : 'var(--bronze)';
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  //  DETECTION TRACKING
-  // ═══════════════════════════════════════════════════════════════════════════
-  function recordDetection(event) {
-    const cls = event.hnids.predicted_class;
-    const conf = event.hnids.confidence;
-    const isAlert = event.hnids.is_alert;
-
-    state.detections.unshift(event);
-    if (state.detections.length > 100) state.detections.pop();
-
-    state.classCounts[cls] = (state.classCounts[cls] || 0) + 1;
-    if (isAlert) state.totalAlerts++;
-    state.confidenceSum += conf;
-    state.confidenceCount++;
-
-    updateDashboard();
-    addFeedEntry(event);
-
-    if (isAlert && cls !== 'BENIGN') {
-      showToast(`${cls} detected — ${(conf * 100).toFixed(1)}% confidence`);
-    }
-  }
-
-  function updateDashboard() {
-    if (dom.totalRequests) dom.totalRequests.textContent = state.totalRequests;
-    if (dom.totalAlerts) dom.totalAlerts.textContent = state.totalAlerts;
-
-    if (state.confidenceCount > 0 && dom.avgConfidence) {
-      const avg = (state.confidenceSum / state.confidenceCount * 100).toFixed(1);
-      dom.avgConfidence.textContent = `${avg}%`;
-    }
-
-    if (dom.detectionCount) dom.detectionCount.textContent = state.detections.length;
-    updateDistribution();
-  }
-
-  function addFeedEntry(event) {
-    const feed = dom.detectionFeed;
-    if (!feed) return;
-    const empty = feed.querySelector('.feed-empty');
-    if (empty) empty.remove();
-
-    const cls = event.hnids.predicted_class;
-    const conf = (event.hnids.confidence * 100).toFixed(1);
-    const kind = event.event.kind;
-    const time = new Date(event.event.created).toLocaleTimeString();
-
-    const entry = document.createElement('div');
-    entry.className = 'detection-entry';
-    entry.innerHTML = `
-      <span class="detection-entry__kind detection-entry__kind--${kind}">${kind}</span>
-      <span class="detection-entry__class" style="color: ${CLASS_HEX[cls] || '#1C1A17'}">${cls}</span>
-      <span class="detection-entry__confidence">${conf}%</span>
-      <span class="detection-entry__time">${time}</span>
-    `;
-
-    feed.insertBefore(entry, feed.firstChild);
-
-    // Keep max 50 entries
-    while (feed.children.length > 50) {
-      feed.removeChild(feed.lastChild);
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  //  METRICS
-  // ═══════════════════════════════════════════════════════════════════════════
-  async function loadMetrics() {
-    try {
-      const res = await fetch(`${API_BASE}/metrics`);
-      if (res.ok) {
-        const text = await res.text();
-        if (dom.metricsContent) dom.metricsContent.textContent = text || 'No metrics available yet.';
-      } else {
-        if (dom.metricsContent) dom.metricsContent.textContent = `Error loading metrics: HTTP ${res.status}`;
-      }
-    } catch {
-      if (dom.metricsContent) dom.metricsContent.textContent = 'Cannot reach metrics endpoint. Is the server running?';
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  //  TOAST — quiet notification
-  // ═══════════════════════════════════════════════════════════════════════════
-  let toastTimeout = null;
-
-  function showToast(message) {
-    if (!dom.toast || !dom.toastText) return;
-    dom.toastText.textContent = message;
-    dom.toast.classList.remove('hidden');
-
-    clearTimeout(toastTimeout);
-    toastTimeout = setTimeout(() => {
-      dom.toast.classList.add('hidden');
-    }, 5000);
-  }
-
-  function hideToast() {
-    if (dom.toast) dom.toast.classList.add('hidden');
-    clearTimeout(toastTimeout);
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  //  INIT
+  //  10. INITIALIZATION
   // ═══════════════════════════════════════════════════════════════════════════
   function init() {
     initNav();
-    buildDistribution();
+    buildPosterWall();
+    initSampleChips();
     updateDashboard();
 
     // Event listeners
     if (dom.btnDetect) dom.btnDetect.addEventListener('click', runDetect);
-    if (dom.btnLoadExample) dom.btnLoadExample.addEventListener('click', loadExample);
+    if (dom.btnLoadExample) dom.btnLoadExample.addEventListener('click', () => loadPresetSample('ddos'));
     if (dom.btnStream) dom.btnStream.addEventListener('click', pushFlow);
     if (dom.btnRefreshMetrics) dom.btnRefreshMetrics.addEventListener('click', loadMetrics);
     if (dom.toastClose) dom.toastClose.addEventListener('click', hideToast);
 
-    // ⌘+Enter in textareas triggers detect/stream
+    // Keyboard shortcuts (Cmd+Enter or Ctrl+Enter to submit)
     if (dom.detectInput) {
       dom.detectInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.metaKey) runDetect();
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          runDetect();
+        }
       });
     }
     if (dom.streamInput) {
       dom.streamInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.metaKey) pushFlow();
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          pushFlow();
+        }
       });
     }
 
-    // Initial health check
-    checkHealth();
+    // Initial default sample load
+    loadPresetSample('ddos');
 
-    // Periodic health check every 15s
-    setInterval(checkHealth, 15000);
+    // Initial health check & recurring check every 12s
+    checkHealth();
+    setInterval(checkHealth, 12000);
   }
 
-  // Wait for DOM
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

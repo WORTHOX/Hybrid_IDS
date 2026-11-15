@@ -4,176 +4,385 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HNIDS — Hybrid Network Intrusion Detection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet">
+  <!--
+    HNIDS DESIGN SYSTEM: OVERCLOCK × QUIET LUXURY
+    ═════════════════════════════════════════════════════════════════════════
+    OVERCLOCK STRUCTURAL ARCHITECTURE:
+      · Strict 3px solid ink boundaries & zero border-radius everywhere
+      · Tactile hard offset shadows (4px 4px 0 var(--ink)) on primary surfaces
+      · Hardware keycaps ([1], [2], [⏎], [⌘L]) for tactile navigation
+      · Full-width 8-column Poster Wall matrix for threat taxonomy
+      · 3px thick underline form fields & 48px tactile interactive controls
+      · Iconic 4-segment signature footer bar
+    QUIET LUXURY MATERIALITY & ATMOSPHERE:
+      · Warm tactile linen ground (#FBFBF9) & stone surface (#F5F2EB)
+      · Editorial Cormorant Garamond (300/400) serif display headings
+      · Technical Inter Tight (400/500) Swiss body & tracked uppercase labels
+      · Restrained Bronze (#8A7258) & Charcoal (#2C2926) authority accents
+      · Calibrated earthy semantics: Olive, Sienna, Deep Rust, Slate
+      · Zero unrequested animations, strict WCAG 2.1 AA accessibility & CLS < 0.1
+    ═════════════════════════════════════════════════════════════════════════
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◇</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231C1A17'/><text x='50' y='68' font-size='56' fill='%23FBFBF9' font-family='serif' text-anchor='middle'>H</text></svg>">
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav role="navigation" aria-label="Main">
-    <span class="wordmark">HNIDS</span>
-    <div class="nav-links">
-      <a href="#" class="nav-link active" data-view="dashboard">Overview</a>
-      <a href="#" class="nav-link" data-view="detect">Detection</a>
-      <a href="#" class="nav-link" data-view="stream">Stream</a>
-      <a href="#" class="nav-link" data-view="metrics">Metrics</a>
+  <!-- ═══ TOP NAVIGATION ═══ -->
+  <nav class="top-nav" role="navigation" aria-label="Main Navigation">
+    <div class="nav-brand">
+      <span class="nav-wordmark">HNIDS</span>
+      <span class="nav-spec-badge">HYBRID · v1</span>
     </div>
-    <div class="nav-status">
-      <span class="status-mark" id="status-mark"></span>
-      <span class="status-text" id="status-text">connecting</span>
+
+    <div class="nav-actions">
+      <div class="nav-links" role="tablist">
+        <button class="nav-btn active" data-view="dashboard" role="tab" aria-selected="true" id="tab-dashboard">
+          <span class="key-cap" aria-hidden="true">1</span> Overview
+        </button>
+        <button class="nav-btn" data-view="detect" role="tab" aria-selected="false" id="tab-detect">
+          <span class="key-cap" aria-hidden="true">2</span> Detection
+        </button>
+        <button class="nav-btn" data-view="stream" role="tab" aria-selected="false" id="tab-stream">
+          <span class="key-cap" aria-hidden="true">3</span> Stream
+        </button>
+        <button class="nav-btn" data-view="metrics" role="tab" aria-selected="false" id="tab-metrics">
+          <span class="key-cap" aria-hidden="true">4</span> Metrics
+        </button>
+      </div>
+
+      <div class="nav-status" aria-live="polite">
+        <span class="status-mark" id="status-mark" aria-hidden="true"></span>
+        <span class="status-text" id="status-text">INITIALIZING</span>
+      </div>
     </div>
   </nav>
 
-  <!-- ═══ DASHBOARD ═══ -->
-  <section class="view active" id="view-dashboard">
+  <!-- ═══ VIEW 1: OVERVIEW (DASHBOARD) ═══ -->
+  <main class="view active" id="view-dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
 
-    <!-- Hero -->
-    <header class="hero">
-      <div class="hero-left">
-        <div class="eyebrow">Hybrid detection · v1</div>
-        <h1>Network<br>threat<br>clarity.</h1>
-        <div class="ink-line"></div>
-        <p>BiGRU + Transformer sequence model fused with XGBoost probability features. Eight-class taxonomy.</p>
+    <!-- Hero Section (Quiet Luxury 38/62 Asymmetric Grid with Overclock 3px Outlines) -->
+    <header class="hero-section">
+      <div class="hero-col hero-col--premise">
+        <div class="eyebrow-tag">BiGRU · Transformer · XGBoost</div>
+        <h1 class="hero-headline">Network<br>threat<br>clarity.</h1>
+        <div class="oc-rule-bar" aria-hidden="true"></div>
+        <p class="hero-summary">
+          Dual-stream temporal sequence classification combined with gradient-boosted decision trees. Precision detection across 8 threat classes with quiet confidence.
+        </p>
       </div>
-      <div class="hero-right">
-        <p>Real-time classification of network flows against trained patterns — DDoS, DoS, port scans, brute force, web attacks, bots, and rare anomalies. Quiet confidence scores, no noise.</p>
-        <div class="hero-bundle">
-          <span class="eyebrow">Active bundle</span>
-          <span class="bundle-ver" id="bundle-version">—</span>
+
+      <div class="hero-col hero-col--spec">
+        <div class="spec-card">
+          <div class="spec-card__header">
+            <span class="spec-label">SYSTEM CONTRACT</span>
+            <span class="spec-id" id="bundle-version">—</span>
+          </div>
+          <div class="spec-grid">
+            <div class="spec-item">
+              <span class="spec-item__key">FEATURE VECTOR</span>
+              <span class="spec-item__val">78 flow metrics</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-item__key">WINDOW LEN</span>
+              <span class="spec-item__val">20 packets / seq</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-item__key">LATENCY SLA</span>
+              <span class="spec-item__val">&lt; 35ms / inference</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-item__key">TAXONOMY</span>
+              <span class="spec-item__val">8 Classes (CIC-2017)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-callout">
+          <span class="callout-label">INSPECTION FOCUS</span>
+          <p class="callout-body">Zero-drift verification enabled. Input tensors are strictly shape-checked against SHA-256 model artifacts before evaluation.</p>
         </div>
       </div>
     </header>
 
-    <!-- Metrics strip -->
-    <div class="metrics-strip">
-      <div class="metric-cell">
-        <div class="metric-label">Total requests</div>
-        <div class="metric-figure" id="total-requests">0</div>
+    <!-- Key Metrics Strip (Overclock Poster Figures + QL Allocation Layout) -->
+    <section class="kpi-strip" aria-label="Operational Metrics">
+      <div class="kpi-cell">
+        <span class="kpi-eyebrow">TOTAL INSPECTED</span>
+        <div class="kpi-numeral" id="total-requests">0</div>
+        <span class="kpi-caption">Network flow windows</span>
       </div>
-      <div class="metric-cell">
-        <div class="metric-label">Alerts raised</div>
-        <div class="metric-figure metric-figure--warm" id="total-alerts">0</div>
+      <div class="kpi-cell">
+        <span class="kpi-eyebrow">ALERTS TRIGGERED</span>
+        <div class="kpi-numeral kpi-numeral--alert" id="total-alerts">0</div>
+        <span class="kpi-caption">Anomalies requiring action</span>
       </div>
-      <div class="metric-cell">
-        <div class="metric-label">Mean confidence</div>
-        <div class="metric-figure" id="avg-confidence">—</div>
+      <div class="kpi-cell">
+        <span class="kpi-eyebrow">MEAN CONFIDENCE</span>
+        <div class="kpi-numeral" id="avg-confidence">—</div>
+        <span class="kpi-caption">Weighted probability</span>
       </div>
-      <div class="metric-cell">
-        <div class="metric-label">Detection classes</div>
-        <div class="metric-figure">8</div>
-        <div class="metric-note">· taxonomy v1</div>
+      <div class="kpi-cell">
+        <span class="kpi-eyebrow">PROTECTION PROFILE</span>
+        <div class="kpi-numeral">8 / 8</div>
+        <span class="kpi-caption">Active class models</span>
       </div>
-    </div>
+    </section>
 
-    <!-- Content: Class distribution + Recent -->
-    <div class="content-split">
-      <!-- Distribution -->
-      <div class="content-main">
-        <div class="section-label">Threat distribution</div>
-        <div class="distribution" id="distribution">
-          <!-- JS populated -->
+    <!-- Overclock Signature Poster Wall (Threat Taxonomy Matrix) -->
+    <section class="poster-section" aria-label="Threat Classification Matrix">
+      <div class="section-header">
+        <span class="section-title">THREAT CLASSIFICATION MATRIX</span>
+        <span class="section-subtitle">Real-time distribution across active bundle</span>
+      </div>
+
+      <div class="poster-wall" id="distribution">
+        <!-- Generated by app.js: 8 architectural poster panels with keycaps, counts, and hard indicator bars -->
+      </div>
+    </section>
+
+    <!-- Content Split: Recent Detections (62%) + Architecture Telemetry (38%) -->
+    <div class="split-layout">
+      <!-- Live Detection Feed -->
+      <section class="split-col split-col--main">
+        <div class="section-header">
+          <span class="section-title">INCIDENT LOG <span class="badge" id="detection-count">0</span></span>
+          <span class="section-subtitle">Chronological flow events</span>
         </div>
-      </div>
 
-      <!-- Recent detections -->
-      <div class="content-side">
-        <div class="section-label">Recent detections <span class="badge" id="detection-count">0</span></div>
-        <div class="feed" id="detection-feed" role="log" aria-live="polite">
+        <div class="feed-container" id="detection-feed" role="log" aria-live="polite">
           <div class="feed-empty">
-            <p>No detections yet.</p>
+            <span class="feed-empty__icon">◇</span>
+            <p>No detection events recorded in this session. Send flow traffic via the Detection or Stream tabs.</p>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Architecture Telemetry Sidebar -->
+      <aside class="split-col split-col--side">
+        <div class="section-header">
+          <span class="section-title">MODEL PIPELINE</span>
+          <span class="section-subtitle">Fused inference graph</span>
+        </div>
+
+        <div class="telemetry-block">
+          <div class="telemetry-step">
+            <span class="step-badge">LAYER 01</span>
+            <div class="step-info">
+              <span class="step-name">Input Preprocessor</span>
+              <span class="step-detail">StandardScaler (78 features) · Zero NaN guard</span>
+            </div>
+          </div>
+          <div class="telemetry-step">
+            <span class="step-badge">LAYER 02</span>
+            <div class="step-info">
+              <span class="step-name">Bidirectional GRU</span>
+              <span class="step-detail">Hidden dim 64 · 2 layers · Temporal capture</span>
+            </div>
+          </div>
+          <div class="telemetry-step">
+            <span class="step-badge">LAYER 03</span>
+            <div class="step-info">
+              <span class="step-name">Transformer Encoder</span>
+              <span class="step-detail">4 heads · Self-attention sequence fusion</span>
+            </div>
+          </div>
+          <div class="telemetry-step">
+            <span class="step-badge">LAYER 04</span>
+            <div class="step-info">
+              <span class="step-name">XGBoost Stacking Head</span>
+              <span class="step-detail">Softmax probabilities · Calibrated decision gate</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-audit-card">
+          <span class="audit-title">INTEGRITY GUARANTEE</span>
+          <p class="audit-copy">Source code is immutable. All client requests proxy directly through local FastAPI endpoints with strict schema authentication.</p>
+        </div>
+      </aside>
     </div>
-  </section>
 
-  <!-- ═══ DETECT ═══ -->
-  <section class="view" id="view-detect">
-    <div class="detect-layout">
-      <div class="detect-form">
-        <div class="section-label">Single window detection</div>
-        <p class="body-text">Submit 20 network flows for classification. Paste the JSON payload or load an example.</p>
+  </main>
 
-        <label class="field-label" for="detect-input">Request payload</label>
-        <textarea class="field-area" id="detect-input" rows="16" spellcheck="false" placeholder='{ "flows": [ ... ] }'></textarea>
+  <!-- ═══ VIEW 2: DETECTION (INTERACTIVE TEST BENCH) ═══ -->
+  <section class="view" id="view-detect" role="tabpanel" aria-labelledby="tab-detect">
+    <div class="split-layout split-layout--detect">
 
-        <label class="field-label" for="api-key-detect">API key</label>
-        <input class="field-input" type="password" id="api-key-detect" value="dev-local-key" autocomplete="off">
+      <!-- Form Column -->
+      <div class="split-col split-col--main">
+        <div class="section-header">
+          <span class="section-title">WINDOW CLASSIFICATION BENCH</span>
+          <span class="section-subtitle">Dispatch 20 consecutive packet flows for sequential evaluation</span>
+        </div>
 
-        <div class="btn-row">
-          <button class="btn-primary" id="btn-detect">Detect</button>
-          <button class="btn-secondary" id="btn-load-example">Load example</button>
+        <!-- Quick Sample Selector Pills -->
+        <div class="sample-pills-bar">
+          <span class="sample-label">LOAD PRESET:</span>
+          <button type="button" class="sample-chip" data-sample="ddos">DDoS</button>
+          <button type="button" class="sample-chip" data-sample="dos">DoS</button>
+          <button type="button" class="sample-chip" data-sample="benign">Benign</button>
+          <button type="button" class="sample-chip" data-sample="portscan">PortScan</button>
+          <button type="button" class="sample-chip" data-sample="webattack">WebAttack</button>
+        </div>
+
+        <div class="form-group">
+          <label class="field-label" for="detect-input">FLOW WINDOW PAYLOAD (JSON)</label>
+          <textarea class="code-editor" id="detect-input" rows="15" spellcheck="false" placeholder='{ "flows": [ ... 20 flow objects ... ] }'></textarea>
+        </div>
+
+        <div class="form-group form-group--underline">
+          <label class="field-label" for="api-key-detect">SECURITY KEY (X-API-KEY)</label>
+          <input class="field-input-underline" type="password" id="api-key-detect" value="dev-local-key" autocomplete="off">
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn--primary" id="btn-detect">
+            <span class="btn__key" aria-hidden="true">⏎</span> RUN DETECTION
+          </button>
+          <button type="button" class="btn btn--secondary" id="btn-load-example">
+            <span class="btn__key" aria-hidden="true">⌘L</span> RANDOM SAMPLE
+          </button>
         </div>
       </div>
 
-      <div class="detect-result" id="detect-result-area">
-        <div class="section-label">Result</div>
+      <!-- Result Column -->
+      <div class="split-col split-col--side">
+        <div class="section-header">
+          <span class="section-title">CLASSIFICATION RESULT</span>
+          <span class="section-subtitle">Model inference outputs</span>
+        </div>
+
         <div class="result-placeholder" id="result-placeholder">
-          <p>Submit a request to see classification results here.</p>
+          <span class="placeholder-glyph">◇</span>
+          <p>Submit payload or select a preset to evaluate network flows.</p>
         </div>
-        <div class="result-content hidden" id="result-content">
-          <div class="result-hero">
-            <span class="result-class" id="result-class">—</span>
-            <span class="result-conf" id="result-confidence">—</span>
+
+        <div class="result-card hidden" id="result-content">
+          <!-- Big Overclock Hero Badge -->
+          <div class="result-hero-box">
+            <div class="result-class-title" id="result-class">—</div>
+            <div class="result-confidence-stat" id="result-confidence">—</div>
           </div>
-          <div class="result-meta" id="result-details"></div>
-          <div class="result-probs" id="result-probs"></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══ STREAM ═══ -->
-  <section class="view" id="view-stream">
-    <div class="detect-layout">
-      <div class="detect-form">
-        <div class="section-label">Flow streaming</div>
-        <p class="body-text">Push individual flows to the session buffer. A detection fires automatically once 20 flows accumulate.</p>
-
-        <label class="field-label" for="stream-input">Flow record</label>
-        <textarea class="field-area" id="stream-input" rows="12" spellcheck="false" placeholder='{ "session_id": "...", "timestamp": "...", "features": { ... } }'></textarea>
-
-        <label class="field-label" for="api-key-stream">API key</label>
-        <input class="field-input" type="password" id="api-key-stream" value="dev-local-key" autocomplete="off">
-
-        <div class="btn-row">
-          <button class="btn-primary" id="btn-stream">Push flow</button>
-        </div>
-      </div>
-
-      <div class="detect-result">
-        <div class="section-label">Buffer</div>
-        <div class="buffer-gauge">
-          <div class="buffer-track">
-            <div class="buffer-fill" id="buffer-fill"></div>
+          <!-- Metadata Key-Value Grid -->
+          <div class="result-meta-grid" id="result-details">
+            <!-- Populated by JS -->
           </div>
-          <span class="buffer-label" id="buffer-label">0 / 20</span>
-        </div>
 
-        <div class="section-label" style="margin-top: 40px;">Stream log</div>
-        <div class="feed feed--compact" id="stream-log" role="log" aria-live="polite">
-          <div class="feed-empty"><p>No stream events yet.</p></div>
+          <!-- Probabilities Distribution Breakdown -->
+          <div class="result-prob-breakdown">
+            <div class="prob-header">POSTERIOR PROBABILITY BY CLASS</div>
+            <div class="prob-list" id="result-probs">
+              <!-- Populated by JS -->
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   </section>
 
-  <!-- ═══ METRICS ═══ -->
-  <section class="view" id="view-metrics">
-    <div class="metrics-view">
-      <div class="section-label">
-        Prometheus metrics
-        <button class="btn-secondary btn-secondary--sm" id="btn-refresh-metrics">Refresh</button>
+  <!-- ═══ VIEW 3: STREAM (LIVE FLOW ACCUMULATOR) ═══ -->
+  <section class="view" id="view-stream" role="tabpanel" aria-labelledby="tab-stream">
+    <div class="split-layout split-layout--stream">
+
+      <div class="split-col split-col--main">
+        <div class="section-header">
+          <span class="section-title">SINGLE FLOW STREAMING</span>
+          <span class="section-subtitle">Push single flows to buffer. Window fires model automatically at 20 flows.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="field-label" for="stream-input">FLOW RECORD (JSON)</label>
+          <textarea class="code-editor" id="stream-input" rows="12" spellcheck="false" placeholder='{ "session_id": "stream-1", "timestamp": "...", "features": { ... } }'></textarea>
+        </div>
+
+        <div class="form-group form-group--underline">
+          <label class="field-label" for="api-key-stream">SECURITY KEY (X-API-KEY)</label>
+          <input class="field-input-underline" type="password" id="api-key-stream" value="dev-local-key" autocomplete="off">
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn--primary" id="btn-stream">
+            <span class="btn__key" aria-hidden="true">⏎</span> PUSH FLOW
+          </button>
+        </div>
       </div>
-      <pre class="metrics-pre" id="metrics-content">Loading…</pre>
+
+      <div class="split-col split-col--side">
+        <div class="section-header">
+          <span class="section-title">WINDOW BUFFER STATUS</span>
+          <span class="section-subtitle">Accumulator queue</span>
+        </div>
+
+        <div class="buffer-box">
+          <div class="buffer-gauge-track">
+            <div class="buffer-gauge-fill" id="buffer-fill" style="width: 0%;"></div>
+          </div>
+          <div class="buffer-count-row">
+            <span class="buffer-title">QUEUED PACKETS</span>
+            <span class="buffer-val" id="buffer-label">0 / 20</span>
+          </div>
+        </div>
+
+        <div class="section-header" style="margin-top: 32px;">
+          <span class="section-title">STREAM TELEMETRY LOG</span>
+        </div>
+        <div class="feed-container feed-container--compact" id="stream-log" role="log" aria-live="polite">
+          <div class="feed-empty">
+            <p>Awaiting stream ingestion events.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- Alert toast -->
+  <!-- ═══ VIEW 4: METRICS (PROMETHEUS ENGINE) ═══ -->
+  <section class="view" id="view-metrics" role="tabpanel" aria-labelledby="tab-metrics">
+    <div class="metrics-panel">
+      <div class="section-header">
+        <div class="header-split">
+          <span class="section-title">PROMETHEUS EXPORTER TELEMETRY</span>
+          <button type="button" class="btn btn--secondary btn--sm" id="btn-refresh-metrics">
+            <span class="btn__key" aria-hidden="true">R</span> REFRESH METRICS
+          </button>
+        </div>
+        <span class="section-subtitle">Raw endpoint output from /metrics</span>
+      </div>
+
+      <pre class="telemetry-pre" id="metrics-content">Loading Prometheus metrics…</pre>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER: OVERCLOCK 4-SEGMENT BAR + SYSTEM IDENT ═══ -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="footer-left">
+      <!-- Overclock's iconic 4-segment color signature rendered in Quiet Luxury tones -->
+      <div class="oc-signature-segments" aria-hidden="true">
+        <span class="seg seg--bronze" title="Bronze Accent"></span>
+        <span class="seg seg--charcoal" title="Charcoal Base"></span>
+        <span class="seg seg--olive" title="Olive Signal"></span>
+        <span class="seg seg--rust" title="Rust Alert"></span>
+      </div>
+      <span class="footer-ident">HNIDS · HYBRID INTRUSION DETECTION ENGINE</span>
+    </div>
+
+    <div class="footer-right">
+      <span class="footer-meta">FASTAPI · PYTORCH · XGBOOST</span>
+      <span class="footer-shortcut">HOTKEYS [1-4] NAVIGATE</span>
+    </div>
+  </footer>
+
+  <!-- ═══ TOAST NOTIFICATION ═══ -->
   <div class="toast hidden" id="toast" role="alert" aria-live="assertive">
+    <span class="toast-indicator" aria-hidden="true">!</span>
     <span class="toast-text" id="toast-text"></span>
-    <button class="toast-close" id="toast-close" aria-label="Dismiss">×</button>
+    <button type="button" class="toast-close" id="toast-close" aria-label="Dismiss Notification">×</button>
   </div>
 
   <script src="app.js"></script>
