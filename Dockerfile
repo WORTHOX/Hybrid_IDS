@@ -27,13 +27,13 @@ ENV PYTHONUNBUFFERED=1 \
     MKL_NUM_THREADS=1 \
     HNIDS_API_KEY=dev-local-key
 
-# Copy project specification files
-COPY pyproject.toml uv.lock ./
+# Copy dependency specifications and README (required by hatchling packaging)
+COPY pyproject.toml uv.lock README.md ./
 
-# Install python dependencies using uv (CPU torch)
-RUN uv sync --frozen --no-dev --all-extras
+# Step 1: Install all Python dependencies first (torch-cpu, xgboost, fastapi, etc.)
+RUN uv sync --frozen --no-install-project --no-dev --all-extras
 
-# Copy application source, models, and frontend
+# Step 2: Copy application source, models, configs, and frontend
 COPY src/ ./src/
 COPY configs/ ./configs/
 COPY models/ ./models/
@@ -41,6 +41,9 @@ COPY examples/ ./examples/
 COPY frontend/ ./frontend/
 COPY serve_dashboard.py ./
 COPY start.sh ./
+
+# Step 3: Install the hnids CLI package
+RUN uv sync --frozen --no-dev --all-extras
 
 # Set permissions
 RUN chmod +x ./start.sh
