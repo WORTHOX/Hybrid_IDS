@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   HNIDS — TACTICAL CYBER TELEMETRY ENGINE
+   AEGIS CYBER DEFENSE — TELEMETRY ENGINE
    Direct Proxy Routing: /api/* → FastAPI Engine on port 8000
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -20,16 +20,16 @@
     'Rare'
   ];
 
-  // Exact tactical cyber semantics
+  // Punchy Overclock Palette
   const CLASS_COLORS = {
-    BENIGN:     '#10B981', // Emerald Safe
-    DoS:        '#F59E0B', // Amber Warn
-    DDoS:       '#F43F5E', // Crimson Alert
-    PortScan:   '#EAB308', // Ochre
-    BruteForce: '#EC4899', // Pink Alert
-    WebAttack:  '#FB7185', // Rose Attack
-    Bot:        '#06B6D4', // Cyan Protocol
-    Rare:       '#A855F7', // Violet Anomaly
+    BENIGN:     '#4ADE80', // Matrix Green
+    DoS:        '#FFB020', // Boost Gold
+    DDoS:       '#FF4D4D', // Hot Crimson
+    PortScan:   '#FBBC04', // Laser Yellow
+    BruteForce: '#F84464', // Hot Magenta
+    WebAttack:  '#FF6B4A', // Hot Coral
+    Bot:        '#4CC9F0', // Electric Sky Blue
+    Rare:       '#D4C5F9', // Neon Lilac
   };
 
   const CLASS_SHORT_CODES = {
