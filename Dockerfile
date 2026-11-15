@@ -45,8 +45,8 @@ COPY start.sh ./
 # Set permissions
 RUN chmod +x ./start.sh
 
-# Expose web service port
-EXPOSE 3000
+# Expose web service ports (3000 for standard/Render, 7860 for Hugging Face Spaces)
+EXPOSE 3000 7860
 
 # Health check against proxy readiness
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \
