@@ -1,26 +1,38 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    HNIDS Dashboard — Client Application
-   Connects to the FastAPI backend on the same host
+   Routes through /api/* proxy → FastAPI backend
    ═══════════════════════════════════════════════════════════════════════════ */
 
 (() => {
   'use strict';
 
   // ─── Configuration ───
-  const API_BASE = window.location.port === '3000'
-    ? 'http://127.0.0.1:8000'
-    : `${window.location.protocol}//${window.location.hostname}:8000`;
+  const API_BASE = '/api';
 
   const CLASSES = ['BENIGN', 'DoS', 'DDoS', 'PortScan', 'BruteForce', 'WebAttack', 'Bot', 'Rare'];
+
+  // Muted, professional palette matching CSS tokens
   const CLASS_COLOURS = {
-    BENIGN:     '#4ade80',
-    DoS:        '#ff6b4a',
-    DDoS:       '#ff4d4d',
-    PortScan:   '#ffb020',
-    BruteForce: '#f84464',
-    WebAttack:  '#ea4335',
-    Bot:        '#4cc9f0',
-    Rare:       '#d4c5f9',
+    BENIGN:     'var(--c-benign)',
+    DoS:        'var(--c-dos)',
+    DDoS:       'var(--c-ddos)',
+    PortScan:   'var(--c-portscan)',
+    BruteForce: 'var(--c-bruteforce)',
+    WebAttack:  'var(--c-webattack)',
+    Bot:        'var(--c-bot)',
+    Rare:       'var(--c-rare)',
+  };
+
+  // Hex versions for inline styles where CSS vars aren't available
+  const CLASS_HEX = {
+    BENIGN:     '#5C6E4C',
+    DoS:        '#C8613E',
+    DDoS:       '#9E3B3B',
+    PortScan:   '#B08D57',
+    BruteForce: '#8B4E5A',
+    WebAttack:  '#A0523C',
+    Bot:        '#3D4E6D',
+    Rare:       '#7A6B8A',
   };
 
   // ─── State ───
@@ -40,13 +52,13 @@
   const $$ = (sel) => document.querySelectorAll(sel);
 
   const dom = {
-    statusDot:       $('#status-dot'),
-    statusLabel:     $('#status-label'),
+    statusMark:      $('#status-mark'),
+    statusText:      $('#status-text'),
     bundleVersion:   $('#bundle-version'),
     totalRequests:   $('#total-requests'),
     totalAlerts:     $('#total-alerts'),
     avgConfidence:   $('#avg-confidence'),
-    posterWall:      $('#poster-wall'),
+    distribution:    $('#distribution'),
     detectionFeed:   $('#detection-feed'),
     detectionCount:  $('#detection-count'),
     detectInput:     $('#detect-input'),
@@ -64,28 +76,28 @@
     btnStream:       $('#btn-stream'),
     bufferFill:      $('#buffer-fill'),
     bufferLabel:     $('#buffer-label'),
-    bufferInfo:      $('#buffer-info'),
     streamLog:       $('#stream-log'),
     btnRefreshMetrics: $('#btn-refresh-metrics'),
     metricsContent:  $('#metrics-content'),
-    alertBanner:     $('#alert-banner'),
-    alertBannerText: $('#alert-banner-text'),
-    alertBannerClose: $('#alert-banner-close'),
+    toast:           $('#toast'),
+    toastText:       $('#toast-text'),
+    toastClose:      $('#toast-close'),
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
   //  NAVIGATION
   // ═══════════════════════════════════════════════════════════════════════════
   function initNav() {
-    const navBtns = $$('.nav-btn');
-    navBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const view = btn.dataset.view;
-        navBtns.forEach(b => {
-          b.classList.toggle('active', b === btn);
-          b.removeAttribute('aria-current');
+    const navLinks = $$('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = link.dataset.view;
+        navLinks.forEach(l => {
+          l.classList.toggle('active', l === link);
+          l.removeAttribute('aria-current');
         });
-        btn.setAttribute('aria-current', 'page');
+        link.setAttribute('aria-current', 'page');
         $$('.view').forEach(v => v.classList.toggle('active', v.id === `view-${view}`));
         if (view === 'metrics') loadMetrics();
       });
@@ -95,36 +107,37 @@
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       const idx = parseInt(e.key) - 1;
-      if (idx >= 0 && idx < navBtns.length) {
-        navBtns[idx].click();
+      if (idx >= 0 && idx < navLinks.length) {
+        navLinks[idx].click();
       }
     });
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  POSTER WALL — Detection class panels
+  //  DISTRIBUTION — quiet allocation-style bars
   // ═══════════════════════════════════════════════════════════════════════════
-  function buildPosterWall() {
-    dom.posterWall.innerHTML = CLASSES.map(cls => `
-      <div class="poster" data-class="${cls}">
-        <span class="poster__label">${cls}</span>
-        <span class="poster__count" style="color: ${CLASS_COLOURS[cls]}" id="poster-${cls}">0</span>
-        <div class="poster__bar">
-          <div class="poster__bar-fill" id="poster-bar-${cls}" style="width: 0%; background: ${CLASS_COLOURS[cls]}"></div>
+  function buildDistribution() {
+    if (!dom.distribution) return;
+    dom.distribution.innerHTML = CLASSES.map(cls => `
+      <div class="dist-row" data-class="${cls}">
+        <span class="dist-label">${cls}</span>
+        <div class="dist-track">
+          <div class="dist-fill" id="dist-fill-${cls}" style="width: 0%; background: ${CLASS_HEX[cls]}"></div>
         </div>
+        <span class="dist-value" id="dist-val-${cls}">0</span>
       </div>
     `).join('');
   }
 
-  function updatePosterWall() {
+  function updateDistribution() {
     const total = Math.max(1, Object.values(state.classCounts).reduce((a, b) => a + b, 0));
     CLASSES.forEach(cls => {
       const count = state.classCounts[cls];
       const pct = (count / total * 100).toFixed(1);
-      const countEl = $(`#poster-${cls}`);
-      const barEl = $(`#poster-bar-${cls}`);
-      if (countEl) countEl.textContent = count;
-      if (barEl) barEl.style.width = `${pct}%`;
+      const fillEl = $(`#dist-fill-${cls}`);
+      const valEl = $(`#dist-val-${cls}`);
+      if (fillEl) fillEl.style.width = `${pct}%`;
+      if (valEl) valEl.textContent = count;
     });
   }
 
@@ -136,21 +149,20 @@
       const res = await fetch(`${API_BASE}/readyz`);
       const data = await res.json();
       if (data.ready) {
-        dom.statusDot.className = 'status-dot status-dot--ok';
-        dom.statusLabel.textContent = 'READY';
-        dom.statusLabel.style.color = '#4ade80';
-        dom.bundleVersion.textContent = data.bundle_version || '—';
+        dom.statusMark.className = 'status-mark ok';
+        dom.statusText.textContent = 'ready';
+        if (dom.bundleVersion) {
+          dom.bundleVersion.textContent = data.bundle_version || '—';
+        }
         return true;
       } else {
-        dom.statusDot.className = 'status-dot status-dot--bad';
-        dom.statusLabel.textContent = 'NOT READY';
-        dom.statusLabel.style.color = '#ff4d4d';
+        dom.statusMark.className = 'status-mark bad';
+        dom.statusText.textContent = 'not ready';
         return false;
       }
     } catch {
-      dom.statusDot.className = 'status-dot status-dot--bad';
-      dom.statusLabel.textContent = 'OFFLINE';
-      dom.statusLabel.style.color = '#ff4d4d';
+      dom.statusMark.className = 'status-mark bad';
+      dom.statusText.textContent = 'offline';
       return false;
     }
   }
@@ -178,17 +190,17 @@
   // ═══════════════════════════════════════════════════════════════════════════
   async function runDetect() {
     const raw = dom.detectInput.value.trim();
-    if (!raw) return showAlert('PASTE A JSON PAYLOAD FIRST');
+    if (!raw) return showToast('Paste a JSON payload first.');
 
     let payload;
     try {
       payload = JSON.parse(raw);
     } catch {
-      return showAlert('INVALID JSON — CHECK YOUR PAYLOAD');
+      return showToast('Invalid JSON — check your payload.');
     }
 
     dom.btnDetect.disabled = true;
-    dom.btnDetect.textContent = 'DETECTING…';
+    dom.btnDetect.textContent = 'Detecting…';
 
     try {
       const result = await apiPost('/v1/detect', payload, dom.apiKeyDetect.value);
@@ -196,10 +208,10 @@
       recordDetection(result);
       showResult(result);
     } catch (err) {
-      showAlert(`DETECTION FAILED — ${err.message}`);
+      showToast(`Detection failed — ${err.message}`);
     } finally {
       dom.btnDetect.disabled = false;
-      dom.btnDetect.innerHTML = '<span class="btn__key" aria-hidden="true">⏎</span> DETECT';
+      dom.btnDetect.textContent = 'Detect';
     }
   }
 
@@ -209,22 +221,20 @@
 
     const cls = event.hnids.predicted_class;
     const conf = event.hnids.confidence;
-    const isAlert = event.hnids.is_alert;
 
     dom.resultClass.textContent = cls;
-    dom.resultClass.style.color = CLASS_COLOURS[cls] || '#f3efe6';
+    dom.resultClass.style.color = CLASS_HEX[cls] || '#1C1A17';
 
-    dom.resultConfidence.textContent = `${(conf * 100).toFixed(2)}% CONFIDENCE`;
-    dom.resultConfidence.style.color = conf >= 0.9 ? '#4ade80' : conf >= 0.6 ? '#ff9f1c' : '#ff4d4d';
+    dom.resultConfidence.textContent = `${(conf * 100).toFixed(2)}% confidence`;
 
     // Details grid
     dom.resultDetails.innerHTML = [
-      ['KIND', event.event.kind.toUpperCase()],
-      ['ALERT', isAlert ? 'YES' : 'NO'],
-      ['BUNDLE', event.hnids.bundle_version],
-      ['VALIDATION', event.hnids.validation_status.toUpperCase()],
-      ['SANITIZED', event.hnids.sanitized_values],
-      ['DETECTION ID', event.detection_id.slice(0, 8) + '…'],
+      ['Kind', event.event.kind],
+      ['Alert', event.hnids.is_alert ? 'Yes' : 'No'],
+      ['Bundle', event.hnids.bundle_version],
+      ['Validation', event.hnids.validation_status],
+      ['Sanitized', event.hnids.sanitized_values],
+      ['Detection', event.detection_id.slice(0, 8) + '…'],
     ].map(([k, v]) =>
       `<span class="result-details__key">${k}</span><span class="result-details__val">${v}</span>`
     ).join('');
@@ -239,17 +249,12 @@
           <div class="prob-row">
             <span class="prob-row__label">${name}</span>
             <div class="prob-row__bar">
-              <div class="prob-row__bar-fill" style="width: ${pct}%; background: ${CLASS_COLOURS[name] || '#a3a09a'}"></div>
+              <div class="prob-row__bar-fill" style="width: ${pct}%; background: ${CLASS_HEX[name] || '#A89F93'}"></div>
             </div>
-            <span class="prob-row__val" style="color: ${CLASS_COLOURS[name] || '#a3a09a'}">${pct}%</span>
+            <span class="prob-row__val">${pct}%</span>
           </div>
         `;
       }).join('');
-
-    // Re-trigger animation
-    dom.resultContent.style.animation = 'none';
-    dom.resultContent.offsetHeight; // reflow
-    dom.resultContent.style.animation = '';
   }
 
   // ─── Load Example ───
@@ -268,14 +273,7 @@
         const data = await res.json();
         dom.detectInput.value = JSON.stringify(data, null, 2);
       } else {
-        // Fallback: load from API base
-        const res2 = await fetch(`${API_BASE}/../examples/${pick}`);
-        if (res2.ok) {
-          dom.detectInput.value = JSON.stringify(await res2.json(), null, 2);
-        } else {
-          // Use a hardcoded minimal example
-          dom.detectInput.value = JSON.stringify(EXAMPLE_PAYLOAD, null, 2);
-        }
+        dom.detectInput.value = JSON.stringify(EXAMPLE_PAYLOAD, null, 2);
       }
     } catch {
       dom.detectInput.value = JSON.stringify(EXAMPLE_PAYLOAD, null, 2);
@@ -339,13 +337,13 @@
   // ═══════════════════════════════════════════════════════════════════════════
   async function pushFlow() {
     const raw = dom.streamInput.value.trim();
-    if (!raw) return showAlert('PASTE A FLOW RECORD FIRST');
+    if (!raw) return showToast('Paste a flow record first.');
 
     let payload;
     try {
       payload = JSON.parse(raw);
     } catch {
-      return showAlert('INVALID JSON — CHECK YOUR FLOW RECORD');
+      return showToast('Invalid JSON — check your flow record.');
     }
 
     dom.btnStream.disabled = true;
@@ -364,7 +362,7 @@
         logHtml = `
           <div class="stream-entry stream-entry--alert">
             <span class="stream-entry__time">${time}</span>
-            <span class="stream-entry__text">⚠ DETECTION: ${result.detection.hnids.predicted_class} (${(result.detection.hnids.confidence * 100).toFixed(1)}%)</span>
+            <span class="stream-entry__text">Detection: ${result.detection.hnids.predicted_class} (${(result.detection.hnids.confidence * 100).toFixed(1)}%)</span>
           </div>
         `;
         state.bufferCount = 0;
@@ -379,12 +377,12 @@
       }
 
       const logEl = dom.streamLog;
-      const isEmpty = logEl.querySelector('.empty-state');
+      const isEmpty = logEl.querySelector('.feed-empty');
       if (isEmpty) isEmpty.remove();
       logEl.insertAdjacentHTML('afterbegin', logHtml);
 
     } catch (err) {
-      showAlert(`STREAM FAILED — ${err.message}`);
+      showToast(`Stream failed — ${err.message}`);
     } finally {
       dom.btnStream.disabled = false;
     }
@@ -392,18 +390,12 @@
 
   function updateBuffer() {
     const pct = Math.min(100, (state.bufferCount / state.windowLength) * 100);
-    dom.bufferFill.style.width = `${pct}%`;
-    dom.bufferLabel.textContent = `${state.bufferCount} / ${state.windowLength}`;
+    if (dom.bufferFill) dom.bufferFill.style.width = `${pct}%`;
+    if (dom.bufferLabel) dom.bufferLabel.textContent = `${state.bufferCount} / ${state.windowLength}`;
 
-    if (state.bufferCount === 0) {
-      dom.bufferFill.style.background = 'var(--blue)';
-      dom.bufferInfo.innerHTML = '<p class="buffer-info__text">Buffer reset. Push more flows.</p>';
-    } else if (pct >= 80) {
-      dom.bufferFill.style.background = 'var(--warn)';
-      dom.bufferInfo.innerHTML = '<p class="buffer-info__text" style="color: var(--warn)">Almost full — detection will fire soon.</p>';
-    } else {
-      dom.bufferFill.style.background = 'var(--blue)';
-      dom.bufferInfo.innerHTML = `<p class="buffer-info__text">${state.windowLength - state.bufferCount} more flows needed.</p>`;
+    // Change fill colour when nearing full
+    if (dom.bufferFill) {
+      dom.bufferFill.style.background = pct >= 80 ? 'var(--persimmon)' : 'var(--bronze)';
     }
   }
 
@@ -427,26 +419,27 @@
     addFeedEntry(event);
 
     if (isAlert && cls !== 'BENIGN') {
-      showAlert(`${cls} DETECTED — ${(conf * 100).toFixed(1)}% CONFIDENCE`);
+      showToast(`${cls} detected — ${(conf * 100).toFixed(1)}% confidence`);
     }
   }
 
   function updateDashboard() {
-    dom.totalRequests.textContent = state.totalRequests;
-    dom.totalAlerts.textContent = state.totalAlerts;
+    if (dom.totalRequests) dom.totalRequests.textContent = state.totalRequests;
+    if (dom.totalAlerts) dom.totalAlerts.textContent = state.totalAlerts;
 
-    if (state.confidenceCount > 0) {
+    if (state.confidenceCount > 0 && dom.avgConfidence) {
       const avg = (state.confidenceSum / state.confidenceCount * 100).toFixed(1);
       dom.avgConfidence.textContent = `${avg}%`;
     }
 
-    dom.detectionCount.textContent = state.detections.length;
-    updatePosterWall();
+    if (dom.detectionCount) dom.detectionCount.textContent = state.detections.length;
+    updateDistribution();
   }
 
   function addFeedEntry(event) {
     const feed = dom.detectionFeed;
-    const empty = feed.querySelector('.empty-state');
+    if (!feed) return;
+    const empty = feed.querySelector('.feed-empty');
     if (empty) empty.remove();
 
     const cls = event.hnids.predicted_class;
@@ -458,7 +451,7 @@
     entry.className = 'detection-entry';
     entry.innerHTML = `
       <span class="detection-entry__kind detection-entry__kind--${kind}">${kind}</span>
-      <span class="detection-entry__class" style="color: ${CLASS_COLOURS[cls] || '#f3efe6'}">${cls}</span>
+      <span class="detection-entry__class" style="color: ${CLASS_HEX[cls] || '#1C1A17'}">${cls}</span>
       <span class="detection-entry__confidence">${conf}%</span>
       <span class="detection-entry__time">${time}</span>
     `;
@@ -479,36 +472,34 @@
       const res = await fetch(`${API_BASE}/metrics`);
       if (res.ok) {
         const text = await res.text();
-        dom.metricsContent.textContent = text || 'No metrics available yet.';
+        if (dom.metricsContent) dom.metricsContent.textContent = text || 'No metrics available yet.';
       } else {
-        dom.metricsContent.textContent = `Error loading metrics: HTTP ${res.status}`;
+        if (dom.metricsContent) dom.metricsContent.textContent = `Error loading metrics: HTTP ${res.status}`;
       }
     } catch {
-      dom.metricsContent.textContent = 'Cannot reach metrics endpoint. Is the server running?';
+      if (dom.metricsContent) dom.metricsContent.textContent = 'Cannot reach metrics endpoint. Is the server running?';
     }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  //  ALERT BANNER
+  //  TOAST — quiet notification
   // ═══════════════════════════════════════════════════════════════════════════
-  let alertTimeout = null;
+  let toastTimeout = null;
 
-  function showAlert(message) {
-    dom.alertBannerText.textContent = message;
-    dom.alertBanner.classList.remove('hidden');
-    dom.alertBanner.style.animation = 'none';
-    dom.alertBanner.offsetHeight;
-    dom.alertBanner.style.animation = '';
+  function showToast(message) {
+    if (!dom.toast || !dom.toastText) return;
+    dom.toastText.textContent = message;
+    dom.toast.classList.remove('hidden');
 
-    clearTimeout(alertTimeout);
-    alertTimeout = setTimeout(() => {
-      dom.alertBanner.classList.add('hidden');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      dom.toast.classList.add('hidden');
     }, 5000);
   }
 
-  function hideAlert() {
-    dom.alertBanner.classList.add('hidden');
-    clearTimeout(alertTimeout);
+  function hideToast() {
+    if (dom.toast) dom.toast.classList.add('hidden');
+    clearTimeout(toastTimeout);
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -516,23 +507,27 @@
   // ═══════════════════════════════════════════════════════════════════════════
   function init() {
     initNav();
-    buildPosterWall();
+    buildDistribution();
     updateDashboard();
 
     // Event listeners
-    dom.btnDetect.addEventListener('click', runDetect);
-    dom.btnLoadExample.addEventListener('click', loadExample);
-    dom.btnStream.addEventListener('click', pushFlow);
-    dom.btnRefreshMetrics.addEventListener('click', loadMetrics);
-    dom.alertBannerClose.addEventListener('click', hideAlert);
+    if (dom.btnDetect) dom.btnDetect.addEventListener('click', runDetect);
+    if (dom.btnLoadExample) dom.btnLoadExample.addEventListener('click', loadExample);
+    if (dom.btnStream) dom.btnStream.addEventListener('click', pushFlow);
+    if (dom.btnRefreshMetrics) dom.btnRefreshMetrics.addEventListener('click', loadMetrics);
+    if (dom.toastClose) dom.toastClose.addEventListener('click', hideToast);
 
-    // Enter key in textareas triggers detect/stream
-    dom.detectInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && e.metaKey) runDetect();
-    });
-    dom.streamInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && e.metaKey) pushFlow();
-    });
+    // ⌘+Enter in textareas triggers detect/stream
+    if (dom.detectInput) {
+      dom.detectInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.metaKey) runDetect();
+      });
+    }
+    if (dom.streamInput) {
+      dom.streamInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.metaKey) pushFlow();
+      });
+    }
 
     // Initial health check
     checkHealth();

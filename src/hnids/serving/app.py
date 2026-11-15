@@ -17,7 +17,6 @@ from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
@@ -157,15 +156,6 @@ def create_app(
         yield
 
     app = FastAPI(title="hnids", version="1", lifespan=lifespan)
-
-    # CORS — allow the dashboard frontend to call the API
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
 
     async def require_key(x_api_key: str | None = Header(default=None)) -> None:
         if key and not (x_api_key and secrets.compare_digest(x_api_key, key)):
